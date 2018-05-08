@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+  
+  
+  <link rel="stylesheet" media="all" href="/lib/Han/dist/han.min.css?v=3.3">
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Deep Learning" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="原文链接: http://www.cnblogs.com/IClearner/p/6893645.html 低功耗设计目的与功耗的类型一、低功耗设计的目的1. 便携性设备等需求电子产品在我们生活中扮演了极其重要的作用，便携性的电子设备便是其中一种。便携性设备需要电池供电、需要消耗电池的能量。在同等电能提供下，低功耗设计的产品就能够工作更长的时间。时间的就是生命，因此低功耗设计是很重要的。便携性的设">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数字IC低功耗设计入门（一）">
+<meta property="og:url" content="http://yoursite.com/2018/05/08/digital-ic-low-power-design-1/index.html">
+<meta property="og:site_name" content="DeepLearning">
+<meta property="og:description" content="原文链接: http://www.cnblogs.com/IClearner/p/6893645.html 低功耗设计目的与功耗的类型一、低功耗设计的目的1. 便携性设备等需求电子产品在我们生活中扮演了极其重要的作用，便携性的电子设备便是其中一种。便携性设备需要电池供电、需要消耗电池的能量。在同等电能提供下，低功耗设计的产品就能够工作更长的时间。时间的就是生命，因此低功耗设计是很重要的。便携性的设">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/digital-IC-1/1.JPG">
+<meta property="og:image" content="http://yoursite.com/images/digital-IC-1/2.JPG">
+<meta property="og:image" content="http://yoursite.com/images/digital-IC-1/3.JPG">
+<meta property="og:image" content="http://yoursite.com/images/digital-IC-1/4.JPG">
+<meta property="og:image" content="http://yoursite.com/images/digital-IC-1/5.JPG">
+<meta property="og:image" content="http://yoursite.com/images/digital-IC-1/6.JPG">
+<meta property="og:image" content="http://yoursite.com/images/digital-IC-1/7.JPG">
+<meta property="og:image" content="http://yoursite.com/images/digital-IC-1/8.JPG">
+<meta property="og:image" content="http://yoursite.com/images/digital-IC-1/9.JPG">
+<meta property="og:image" content="http://yoursite.com/images/digital-IC-1/10.JPG">
+<meta property="og:image" content="http://yoursite.com/images/digital-IC-1/11.JPG">
+<meta property="og:updated_time" content="2018-05-08T03:47:38.597Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="数字IC低功耗设计入门（一）">
+<meta name="twitter:description" content="原文链接: http://www.cnblogs.com/IClearner/p/6893645.html 低功耗设计目的与功耗的类型一、低功耗设计的目的1. 便携性设备等需求电子产品在我们生活中扮演了极其重要的作用，便携性的电子设备便是其中一种。便携性设备需要电池供电、需要消耗电池的能量。在同等电能提供下，低功耗设计的产品就能够工作更长的时间。时间的就是生命，因此低功耗设计是很重要的。便携性的设">
+<meta name="twitter:image" content="http://yoursite.com/images/digital-IC-1/1.JPG">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/05/08/digital-ic-low-power-design-1/"/>
+
+
+
+
+
+  <title>数字IC低功耗设计入门（一） | DeepLearning</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">DeepLearning</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/08/digital-ic-low-power-design-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Holmes Shen">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="DeepLearning">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">数字IC低功耗设计入门（一）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-08T09:51:03+08:00">
+                2018-05-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body han-init-context" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><br>原文链接: <a href="http://www.cnblogs.com/IClearner/p/6893645.html" target="_blank" rel="noopener">http://www.cnblogs.com/IClearner/p/6893645.html</a></p>
+<h1 id="低功耗设计目的与功耗的类型"><a href="#低功耗设计目的与功耗的类型" class="headerlink" title="低功耗设计目的与功耗的类型"></a>低功耗设计目的与功耗的类型</h1><h2 id="一、低功耗设计的目的"><a href="#一、低功耗设计的目的" class="headerlink" title="一、低功耗设计的目的"></a>一、低功耗设计的目的</h2><h3 id="1-便携性设备等需求"><a href="#1-便携性设备等需求" class="headerlink" title="1. 便携性设备等需求"></a>1. 便携性设备等需求</h3><p>电子产品在我们生活中扮演了极其重要的作用，便携性的电子设备便是其中一种。便携性设备需要电池供电、需要消耗电池的能量。在同等电能提供下，低功耗设计的产品就能够工作更长的时间。时间的就是生命，因此低功耗设计是很重要的。便携性的设备需要低功耗设备，比如说手机，如果充电两小时，通话5分钟，这谁还买你的手机…</p>
+<h3 id="2-可靠性与性能的影响"><a href="#2-可靠性与性能的影响" class="headerlink" title="2. 可靠性与性能的影响"></a>2. 可靠性与性能的影响</h3><p>设备消耗电能，会产生热量；消耗的能量越多，产生的热量越多。发热越严重，热噪声越大，就会影响器件的正常工作，导致电路不能正常工作。发热量的增加，可能会使工作在1G下的电路，只能工作在500M，这就影响了速度，这最常见的就是手机的发热了，手机发热之后，便感觉卡卡的。</p>
+<h3 id="3-成本的影响"><a href="#3-成本的影响" class="headerlink" title="3. 成本的影响"></a>3. 成本的影响</h3><p>如果不注意进行低功耗设计，那就可能导致后期的成本增加，从而导致整个系统的成本增加。例如，不进行低功耗设计，发热量就可能增加，在封装的时候，就需要考虑怎么给你这个芯片进行散热，从而增加了封装的散热成本。再比如，在进行系统组装的时候，如果那你的芯片功耗过大，就需要考虑在系统外给你进行散热，比如说添加一个风扇，发热很严重的甚至可以给你进行液体降温。这样子就在系统组装上面增加了组装成本。因此在设计初始进行低功耗设计是很重要的。<br><a id="more"></a></p>
+<h2 id="二、功耗的构成-类型"><a href="#二、功耗的构成-类型" class="headerlink" title="二、功耗的构成/类型"></a>二、功耗的构成/类型</h2><p>本小节主要一方面介绍一下功耗的构成，一方面介绍一下工艺库中的功耗模型。功耗的构成可以从两个角度来描述，一个是从功耗种类方面，另一个是从系统结构方面。我们在设计过程中，讨论比较多的往往是从功耗角度方面；工艺库中的功耗模型主要是结合工艺库来对功耗种类进行一些具体的、补充式的讲解。下面我们就来看看功耗的工程吧。</p>
+<h3 id="1-功耗的构成——按类型分"><a href="#1-功耗的构成——按类型分" class="headerlink" title="1. 功耗的构成——按类型分"></a>1. 功耗的构成——按类型分</h3><p>低功耗按照类型分类呢，其构成主要有动态功耗、静态功耗、浪涌功耗这三种。在这第一小点我主要做一些简要的介绍，在后面的第三小点我将结合工艺库进行介绍。</p>
+<h4 id="（1）动态功耗"><a href="#（1）动态功耗" class="headerlink" title="（1）动态功耗"></a>（1）动态功耗</h4><p>动态功耗包括：开关功耗或者称为翻转功耗、短路功耗或者称为内部功耗。</p>
+<h5 id="（a）开关功耗"><a href="#（a）开关功耗" class="headerlink" title="（a）开关功耗"></a>（a）开关功耗</h5><p>在数字CMOS电路中，对负载电容进行充放电时消耗的功耗，比如对于下面的CMOS非门中:<br><img src="/images/digital-IC-1/1.JPG" width="70%" heiht="70%"><br>当Vin = 0时，上面的PMOS导通，下面的NMOS截止；VDD对负载电容Cload进行充电，充电完成后，Vout的电平为高电平。<br>当Vin = 1时，上面的PMOS截止，下面的NMOS导通，负载电容通过NMOS进行放电，放电完成后，Vout的电平为低电平。<br>这样一开一闭的变化，电源的充放电，就形成了开关功耗。</p>
+<h5 id="（b）短路功耗"><a href="#（b）短路功耗" class="headerlink" title="（b）短路功耗"></a>（b）短路功耗</h5><p>短路功耗也称为内部功耗，短路功耗是因为在输入信号进行翻转时，信号的翻转不可能瞬时完成，因此PMOS和NMOS不可能总是一个截止另外一个导通，总有那么一段时间是使PMOS和NMOS同时导通，那么从电源VDD到地VSS之间就有了通路，就形成了短路电流，如下面的反相器电路图所示：</p>
+<p><img src="/images/digital-IC-1/2.JPG" width="70%" heiht="70%"></p>
+<p>由此我们可以知道，动态功耗主要有开关功耗和短路功耗；其中开关功耗在动态功耗中占大部分比例；从上面的两个式子中我们可以看到，动态功耗主要跟电源的供电电压、翻转率、负载电容有关。</p>
+<h4 id="（2）静态功耗"><a href="#（2）静态功耗" class="headerlink" title="（2）静态功耗"></a>（2）静态功耗</h4><p>在CMOS电路中，静态功耗主要是漏电流引起的功耗，如下图所示：</p>
+<p><img src="/images/digital-IC-1/3.JPG" width="70%" heiht="70%"></p>
+<p>漏电流有下面几个部分组成：</p>
+<blockquote>
+<ul>
+<li>PN结反向电流I1（PN-junction Reverse Current）</li>
+<li>源极和漏极之间的亚阈值漏电流I2（Sub-threshold Current）</li>
+<li>栅极漏电流，包括栅极和漏极之间的感应漏电流I3（Gate Induced Drain Leakage）</li>
+<li>栅极和衬底之间的隧道漏电流I4（Gate Tunneling）</li>
+</ul>
+</blockquote>
+<p>一般情况下，漏电流主要是指栅极泄漏电流和亚阈值电流（进入超深亚微米工艺之后，隧道漏电流成为主要电流之一），因此下面就简单介绍一下这两种电流。<br>栅极泄漏功耗：在栅极上加信号后（即栅压），从栅到衬底之间存在电容，因此在栅衬之间就会存在有电流，由此就会存在功耗。<br>亚阈值电流：使栅极电压低于导通阈值，仍会产生从FET漏极到源极的泄漏电流。此电流称为亚阈值泄漏电流。在较狭窄的晶体管中，漏极和源极距离较近的情况下会产生亚阈值泄漏电流。晶体管越窄，泄漏电流越大。要降低亚阈值电流，可以使用高阈值的器件，还可以通过衬底偏置进行增加阈值电压，这些属于低功耗设计，我们在后面的低功耗设计中会进行讲解。</p>
+<h4 id="（3）浪涌功耗"><a href="#（3）浪涌功耗" class="headerlink" title="（3）浪涌功耗"></a>（3）浪涌功耗</h4><p>浪涌功耗是浪涌电流引起的功耗。浪涌电流是指开机或者唤醒的时候，器件流过的最大电流，因此浪涌电流也称为启动电流。一般情况下，浪涌功耗不是我们关注的地方，因此这里只是说明有这个功耗存在。</p>
+<h3 id="2-功耗的构成——按结构分"><a href="#2-功耗的构成——按结构分" class="headerlink" title="2. 功耗的构成——按结构分"></a>2. 功耗的构成——按结构分</h3><p>前面按照类型进行功耗分类，这里使用结构进行分类，也就是根据设备的结构或者设备的构成进行分类。（以SoC为例）主要分为：时钟树功耗、处理器功耗、存储器功耗、其他逻辑和IP核功耗、输入输出pad功耗。在不同的应用、设备中，这些功耗的比例不一样，但是时钟树、处理器、存储器占了绝大部分功耗，这是需要说明的。</p>
+<h3 id="3-工艺库中的功耗模型"><a href="#3-工艺库中的功耗模型" class="headerlink" title="3. 工艺库中的功耗模型"></a>3. 工艺库中的功耗模型</h3><p>前面介绍了功耗的构成，在这一小点中，将结合工艺库进行阐述功耗(的构成)，同时结合工艺库举例说明功耗的计算。</p>
+<h4 id="（1）工艺库中的功耗信息与计算"><a href="#（1）工艺库中的功耗信息与计算" class="headerlink" title="（1）工艺库中的功耗信息与计算"></a>（1）工艺库中的功耗信息与计算</h4><h5 id="（a）-开关功耗计算与相关库信息"><a href="#（a）-开关功耗计算与相关库信息" class="headerlink" title="（a） 开关功耗计算与相关库信息"></a>（a） 开关功耗计算与相关库信息</h5><p>我们从前面知道，开关功耗主要就是对输出电容的充放电引起的，工艺库中有开关功耗有关的信息，如下所示:<br><img src="/images/digital-IC-1/4.JPG" width="70%" heiht="70%"><br>开关功耗可以用开关能量和翻转率来表示:P=E·Tr=C·v^2·T2,即开关能量E=CV^2。翻转率我们后面会进行说明，至于放在后面介绍翻转率，一个是即介绍即用，另外一个就是帮大家功耗的组成。</p>
+<h5 id="（b）-内部功耗-短路功耗与相关库信息"><a href="#（b）-内部功耗-短路功耗与相关库信息" class="headerlink" title="（b） 内部功耗/短路功耗与相关库信息"></a>（b） 内部功耗/短路功耗与相关库信息</h5><p>内部功耗前面我们也介绍了一些，这里再啰嗦一下，短路功耗/内部功耗是单元(比如说反相器单元)的输入从0到1或者从1到0的转换过程中，单元内部P管和N管同时导通那个瞬间的功耗，这不是因为单元损坏而产生的短路功耗 。工艺库中包含了单元的短路功耗，短路功耗由特性描述工具预先处理，存放在工艺库的功耗查找表里。也就是说，我们可以通过工艺库中内部功耗的相关参数，从而得到内部功耗。工艺库中内部功耗信息如下所示:<br><img src="/images/digital-IC-1/5.JPG" width="70%" heiht="70%"><br>单元的内部功耗与其转换时间和输出电容负载有关，根据输入转换时间和输出电容的大小，在工艺库中进行查表，得到上升功耗和下降功耗，然后再根据下面的公式进行计算得到总的内部功耗:</p>
+<p>Pi=(上升功耗+下降功耗)·0.5·Tr</p>
+<p>需要补充一下，工艺库中比较精确的功耗模型，功耗与状态有关，与路径也有关，即state dependent path dependent，SDPD。</p>
+<h5 id="（c）-静态功耗-漏电功耗与相关库信息"><a href="#（c）-静态功耗-漏电功耗与相关库信息" class="headerlink" title="（c） 静态功耗/漏电功耗与相关库信息"></a>（c） 静态功耗/漏电功耗与相关库信息</h5><p>静态功耗/漏电功耗也是由特性工具预先处理，存放在工艺库里面。工艺库中的静态功耗信息如下所示:<br><img src="/images/digital-IC-1/6.JPG" width="70%" heiht="70%"><br>静态功耗跟单元的状态有关，也就是输入(或者说单元)在不同的状态下，对于的功耗不一样，通过状态进行查表，就可以得到相应的静态功耗了。</p>
+<h4 id="（2）计算举例"><a href="#（2）计算举例" class="headerlink" title="（2）计算举例"></a>（2）计算举例</h4><h5 id="（a）-翻转率"><a href="#（a）-翻转率" class="headerlink" title="（a） 翻转率"></a>（a） 翻转率</h5><p>前面我们一直说翻转率，那么翻转率到底是什么呢？这里我们就来给大家介绍一下。<br>翻转率(Toggle rate，Tr):单位时间内信号(包括时钟、数据等等信号)的翻转次数。如下图所示:<br><img src="/images/digital-IC-1/7.JPG" width="70%" heiht="70%"><br>信号在40ns时间内跳转了4次，翻转率为:Tr = 4/4ns = 0.1GHz</p>
+<h5 id="（b）开关功耗"><a href="#（b）开关功耗" class="headerlink" title="（b）开关功耗"></a>（b）开关功耗</h5><p>从前面中我们知道，在计算动态功耗的时候，我们才用到翻转率。其中开关功耗的表达式为:<br><img src="/images/digital-IC-1/8.JPG" width="70%" heiht="70%"></p>
+<h5 id="（c）短路功耗"><a href="#（c）短路功耗" class="headerlink" title="（c）短路功耗"></a>（c）短路功耗</h5><p>根据公式，我们先要查找工艺库得到上升(沿)功耗和下降(沿)功耗。输入转换时间为1.20000,输出电容负载为0.270000，因此对于的上升功耗和下降功耗分别为:0.214947和0.094129。</p>
+<h5 id="（d）其他"><a href="#（d）其他" class="headerlink" title="（d）其他"></a>（d）其他</h5><p>单元的功耗可能与状态和路径有关，下图中:<br><img src="/images/digital-IC-1/9.JPG" width="70%" heiht="70%"><br>左图是RAM单元，在读状态和写状态时，功率是不同的。此外，单元的功耗在不同的操作模式下也有不同的值。<br>右图表示了输入到输出的不同路径，路径不一样，功耗也是不一样的。<br>工艺库有状态和路径不同时的功耗描述，即SDPD描述，如下图所示:<br><img src="/images/digital-IC-1/10.JPG" width="70%" heiht="70%"><br>我们也可以在EDA工具中使用report_lib  slow  -power 命令列出库中的功耗信息:<br><img src="/images/digital-IC-1/11.JPG" width="70%" heiht="70%"></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/11/fpga-verification-system/" rel="next" title="FPGA Verification System">
+                <i class="fa fa-chevron-left"></i> FPGA Verification System
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Holmes Shen</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/shensongjian" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:shensongjian@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#低功耗设计目的与功耗的类型"><span class="nav-number">1.</span> <span class="nav-text">低功耗设计目的与功耗的类型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、低功耗设计的目的"><span class="nav-number">1.1.</span> <span class="nav-text">一、低功耗设计的目的</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-便携性设备等需求"><span class="nav-number">1.1.1.</span> <span class="nav-text">1. 便携性设备等需求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-可靠性与性能的影响"><span class="nav-number">1.1.2.</span> <span class="nav-text">2. 可靠性与性能的影响</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-成本的影响"><span class="nav-number">1.1.3.</span> <span class="nav-text">3. 成本的影响</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、功耗的构成-类型"><span class="nav-number">1.2.</span> <span class="nav-text">二、功耗的构成/类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-功耗的构成——按类型分"><span class="nav-number">1.2.1.</span> <span class="nav-text">1. 功耗的构成——按类型分</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#（1）动态功耗"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">（1）动态功耗</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#（a）开关功耗"><span class="nav-number">1.2.1.1.1.</span> <span class="nav-text">（a）开关功耗</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#（b）短路功耗"><span class="nav-number">1.2.1.1.2.</span> <span class="nav-text">（b）短路功耗</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#（2）静态功耗"><span class="nav-number">1.2.1.2.</span> <span class="nav-text">（2）静态功耗</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#（3）浪涌功耗"><span class="nav-number">1.2.1.3.</span> <span class="nav-text">（3）浪涌功耗</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-功耗的构成——按结构分"><span class="nav-number">1.2.2.</span> <span class="nav-text">2. 功耗的构成——按结构分</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-工艺库中的功耗模型"><span class="nav-number">1.2.3.</span> <span class="nav-text">3. 工艺库中的功耗模型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#（1）工艺库中的功耗信息与计算"><span class="nav-number">1.2.3.1.</span> <span class="nav-text">（1）工艺库中的功耗信息与计算</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#（a）-开关功耗计算与相关库信息"><span class="nav-number">1.2.3.1.1.</span> <span class="nav-text">（a） 开关功耗计算与相关库信息</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#（b）-内部功耗-短路功耗与相关库信息"><span class="nav-number">1.2.3.1.2.</span> <span class="nav-text">（b） 内部功耗/短路功耗与相关库信息</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#（c）-静态功耗-漏电功耗与相关库信息"><span class="nav-number">1.2.3.1.3.</span> <span class="nav-text">（c） 静态功耗/漏电功耗与相关库信息</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#（2）计算举例"><span class="nav-number">1.2.3.2.</span> <span class="nav-text">（2）计算举例</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#（a）-翻转率"><span class="nav-number">1.2.3.2.1.</span> <span class="nav-text">（a） 翻转率</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#（b）开关功耗"><span class="nav-number">1.2.3.2.2.</span> <span class="nav-text">（b）开关功耗</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#（c）短路功耗"><span class="nav-number">1.2.3.2.3.</span> <span class="nav-text">（c）短路功耗</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#（d）其他"><span class="nav-number">1.2.3.2.4.</span> <span class="nav-text">（d）其他</span></a></li></ol></li></ol></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Holmes Shen</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
