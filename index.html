@@ -252,7 +252,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/05/08/digital-ic-low-power-design-1/" itemprop="url">数字IC低功耗设计入门（一）</a></h1>
+                <a class="post-title-link" href="/2018/05/08/digital-ic-low-power-design-1/" itemprop="url">数字IC低功耗设计入门（一）- 低功耗设计目的与功耗的类型</a></h1>
         
 
         <div class="post-meta">
@@ -303,10 +303,27 @@
 
       
         
-          <p><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><br>原文链接: <a href="http://www.cnblogs.com/IClearner/p/6893645.html" target="_blank" rel="noopener">http://www.cnblogs.com/IClearner/p/6893645.html</a></p>
-<h1 id="低功耗设计目的与功耗的类型"><a href="#低功耗设计目的与功耗的类型" class="headerlink" title="低功耗设计目的与功耗的类型"></a>低功耗设计目的与功耗的类型</h1><h2 id="一、低功耗设计的目的"><a href="#一、低功耗设计的目的" class="headerlink" title="一、低功耗设计的目的"></a>一、低功耗设计的目的</h2><h3 id="1-便携性设备等需求"><a href="#1-便携性设备等需求" class="headerlink" title="1. 便携性设备等需求"></a>1. 便携性设备等需求</h3><p>电子产品在我们生活中扮演了极其重要的作用，便携性的电子设备便是其中一种。便携性设备需要电池供电、需要消耗电池的能量。在同等电能提供下，低功耗设计的产品就能够工作更长的时间。时间的就是生命，因此低功耗设计是很重要的。便携性的设备需要低功耗设备，比如说手机，如果充电两小时，通话5分钟，这谁还买你的手机…</p>
-<h3 id="2-可靠性与性能的影响"><a href="#2-可靠性与性能的影响" class="headerlink" title="2. 可靠性与性能的影响"></a>2. 可靠性与性能的影响</h3><p>设备消耗电能，会产生热量；消耗的能量越多，产生的热量越多。发热越严重，热噪声越大，就会影响器件的正常工作，导致电路不能正常工作。发热量的增加，可能会使工作在1G下的电路，只能工作在500M，这就影响了速度，这最常见的就是手机的发热了，手机发热之后，便感觉卡卡的。</p>
-<h3 id="3-成本的影响"><a href="#3-成本的影响" class="headerlink" title="3. 成本的影响"></a>3. 成本的影响</h3><p>如果不注意进行低功耗设计，那就可能导致后期的成本增加，从而导致整个系统的成本增加。例如，不进行低功耗设计，发热量就可能增加，在封装的时候，就需要考虑怎么给你这个芯片进行散热，从而增加了封装的散热成本。再比如，在进行系统组装的时候，如果那你的芯片功耗过大，就需要考虑在系统外给你进行散热，比如说添加一个风扇，发热很严重的甚至可以给你进行液体降温。这样子就在系统组装上面增加了组装成本。因此在设计初始进行低功耗设计是很重要的。<br>
+          <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+<p>原文链接: <a href="http://www.cnblogs.com/IClearner/p/6893645.html" target="_blank" rel="noopener">http://www.cnblogs.com/IClearner/p/6893645.html</a></p>
+<p>第一讲主要介绍低功耗设计目的与功耗的类型，以及如何根据库模型计算功耗。</p>
+<blockquote>
+<ul>
+<li>低功耗设计的目的</li>
+<li>功耗的构成/类型<ul>
+<li>动态功耗<ul>
+<li>开关功耗</li>
+<li>短路功耗</li>
+</ul>
+</li>
+<li>静态功耗</li>
+<li>浪涌功耗</li>
+</ul>
+</li>
+<li>工艺库中的功耗模型</li>
+<li>功耗计算实例</li>
+</ul>
+</blockquote>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2018/05/08/digital-ic-low-power-design-1/#more" rel="contents">
