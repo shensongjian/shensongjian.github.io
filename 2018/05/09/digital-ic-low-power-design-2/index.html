@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+  
+  
+  <link rel="stylesheet" media="all" href="/lib/Han/dist/han.min.css?v=3.3">
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Deep Learning" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="原文链接: http://www.cnblogs.com/IClearner/p/6898463.html 前面学习了进行低功耗的目的个功耗的构成，今天就来分享一下功耗的分析。由于是面向数字IC前端设计的学习，所以这里的功耗分析是基于DC中的power compiler工具；更精确的功耗分析可以采用PT，关于PT的功耗分析可以查阅其他资料，这里不涉及使用PT的进行功耗分析。   功耗分析与流程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数字IC低功耗设计入门（二）- 功耗的分析">
+<meta property="og:url" content="http://yoursite.com/2018/05/09/digital-ic-low-power-design-2/index.html">
+<meta property="og:site_name" content="DeepLearning">
+<meta property="og:description" content="原文链接: http://www.cnblogs.com/IClearner/p/6898463.html 前面学习了进行低功耗的目的个功耗的构成，今天就来分享一下功耗的分析。由于是面向数字IC前端设计的学习，所以这里的功耗分析是基于DC中的power compiler工具；更精确的功耗分析可以采用PT，关于PT的功耗分析可以查阅其他资料，这里不涉及使用PT的进行功耗分析。   功耗分析与流程">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/digital-IC-2/1.jpg">
+<meta property="og:image" content="http://yoursite.com/images/digital-IC-2/2.jpg">
+<meta property="og:image" content="http://yoursite.com/images/digital-IC-2/3.jpg">
+<meta property="og:image" content="http://yoursite.com/images/digital-IC-2/4.jpg">
+<meta property="og:image" content="http://yoursite.com/images/digital-IC-2/5.jpg">
+<meta property="og:image" content="http://yoursite.com/images/digital-IC-2/6.jpg">
+<meta property="og:image" content="http://yoursite.com/images/digital-IC-2/7.jpg">
+<meta property="og:image" content="http://yoursite.com/images/digital-IC-2/8.jpg">
+<meta property="og:image" content="http://yoursite.com/images/digital-IC-2/9.jpg">
+<meta property="og:image" content="http://yoursite.com/images/digital-IC-2/10.jpg">
+<meta property="og:image" content="http://yoursite.com/images/digital-IC-2/11.jpg">
+<meta property="og:image" content="http://yoursite.com/images/digital-IC-2/12.jpg">
+<meta property="og:image" content="http://yoursite.com/images/digital-IC-2/13.jpg">
+<meta property="og:image" content="http://yoursite.com/images/digital-IC-2/14.jpg">
+<meta property="og:image" content="http://yoursite.com/images/digital-IC-2/15.jpg">
+<meta property="og:image" content="http://yoursite.com/images/digital-IC-2/16.jpg">
+<meta property="og:image" content="http://yoursite.com/images/digital-IC-2/17.jpg">
+<meta property="og:image" content="http://yoursite.com/images/digital-IC-2/18.jpg">
+<meta property="og:updated_time" content="2018-05-09T13:47:25.509Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="数字IC低功耗设计入门（二）- 功耗的分析">
+<meta name="twitter:description" content="原文链接: http://www.cnblogs.com/IClearner/p/6898463.html 前面学习了进行低功耗的目的个功耗的构成，今天就来分享一下功耗的分析。由于是面向数字IC前端设计的学习，所以这里的功耗分析是基于DC中的power compiler工具；更精确的功耗分析可以采用PT，关于PT的功耗分析可以查阅其他资料，这里不涉及使用PT的进行功耗分析。   功耗分析与流程">
+<meta name="twitter:image" content="http://yoursite.com/images/digital-IC-2/1.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/05/09/digital-ic-low-power-design-2/"/>
+
+
+
+
+
+  <title>数字IC低功耗设计入门（二）- 功耗的分析 | DeepLearning</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">DeepLearning</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/09/digital-ic-low-power-design-2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Holmes Shen">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="DeepLearning">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">数字IC低功耗设计入门（二）- 功耗的分析</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-09T20:58:43+08:00">
+                2018-05-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body han-init-context" itemprop="articleBody">
+
+      
+      
+
+      
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+<p>原文链接: <a href="http://www.cnblogs.com/IClearner/p/6898463.html" target="_blank" rel="noopener">http://www.cnblogs.com/IClearner/p/6898463.html</a></p>
+<p>前面学习了进行低功耗的目的个功耗的构成，今天就来分享一下功耗的分析。由于是面向数字IC前端设计的学习，所以这里的功耗分析是基于DC中的power compiler工具；更精确的功耗分析可以采用PT，关于PT的功耗分析可以查阅其他资料，这里不涉及使用PT的进行功耗分析。</p>
+<blockquote>
+<ul>
+<li>功耗分析与流程概述<ul>
+<li>功耗分析流程的输入输出</li>
+<li>开关行为的一些概念</li>
+<li>开关行为(文件)情况表示</li>
+</ul>
+</li>
+<li>无向量分析法<ul>
+<li>设置翻转变量</li>
+<li>标记翻转率</li>
+</ul>
+</li>
+<li>SAIF文件分析<ul>
+<li>SAIF–RTL BACK分析法</li>
+<li>SAIF–GATE分析法  </li>
+<li>VCD转SAIF分析法</li>
+</ul>
+</li>
+<li>功耗分析报告</li>
+</ul>
+</blockquote>
+<a id="more"></a>
+<h2 id="一、功耗分析与流程概述"><a href="#一、功耗分析与流程概述" class="headerlink" title="一、功耗分析与流程概述"></a>一、功耗分析与流程概述</h2><p>上一个小节中讲解了功耗的构成，并且结合工艺库进行简要地介绍了功耗的计算。但是实际上，我们根本不可能人工地计算实际的大规模集成电路的功耗，我们往往借助EDA工具帮我们分析电路的功耗。这里我们就介绍一下EDA工具分析功耗的(普遍)流程，然后下一小节我们将介绍低功耗电路的设计和优化。</p>
+<h3 id="1-功耗分析流程的输入输出"><a href="#1-功耗分析流程的输入输出" class="headerlink" title="1. 功耗分析流程的输入输出"></a>1. 功耗分析流程的输入输出</h3><p>功耗分析的流程(从输入输出关系看)如下所示:</p>
+<p><img src="/images/digital-IC-2/1.jpg" width="70%" heiht="70%"></p>
+<p>上面的图中，需要四种东西:</p>
+<blockquote>
+<ul>
+<li>tech library:这个就是包含功耗信息的工艺库了，比较精确的库里面还应该包含状态路径(SDPD)信息，代工厂提供。</li>
+<li>netlist:设计的门级网表电路，可以通过DC综合得到。</li>
+<li>parasitic:设计中连线等寄生参数，比如寄生电容、寄生电阻，这个一般是后端RC寄生参数工具提供，简单的功耗分析可以不需要这个文件。</li>
+<li>switch activity:包含设计中每个节点的开关行为情况，比如说节点的翻转率或者可以计算出节点翻转率的文件。这个开关行为输入文件是很重要的。这个开关行为可以有不同的形式提供，因此就有后面不同的分析功耗的方法。</li>
+</ul>
+</blockquote>
+<p>（注意，不管使用什么方法进行功耗分析，功耗分析的时候，输入设计文件的都是门级网表文件）</p>
+<h3 id="2-开关行为的一些概念"><a href="#2-开关行为的一些概念" class="headerlink" title="2. 开关行为的一些概念"></a>2. 开关行为的一些概念</h3><p>说到开关行为，我们前面的翻转率也是一种开关行为。此外我们还有其他关于开关行为描述的概念，这里我们通过举例说明，如下图所示:</p>
+<p><img src="/images/digital-IC-2/2.jpg" width="70%" heiht="70%"></p>
+<blockquote>
+<ul>
+<li>翻转(次)数:逻辑变化的次数，上图中信号的翻转数为3</li>
+<li>翻转率:前面也有相关介绍，这里重提一下，翻转率是单位时间内信号(包括时钟、数据等等信号)的翻转次数。上图中翻转率为3/6 = 0.5(6个时间间隔内，翻转了3次)</li>
+<li>T1,T0:(节点)信号的逻辑值为1和0的持续时间，上图中T1为4，T0为2。</li>
+<li>静态概率(static  probability ，SP):(节点)信号逻辑值为1的概率，上图中的SP为4/6=2/3。</li>
+</ul>
+</blockquote>
+<h3 id="3-开关行为-文件-情况表示"><a href="#3-开关行为-文件-情况表示" class="headerlink" title="3. 开关行为(文件)情况表示"></a>3. 开关行为(文件)情况表示</h3><p>前面我们说到了功耗的分析需要开关行为的情况，一般就是指每个节点的翻转率情况，我们有下面方式设置翻转率:</p>
+<blockquote>
+<ul>
+<li>直接命令进行: 例如命令:<br>  set_switching_activity  -static   0.2   -toggle_rate   20 -period  1000 [all_inputs]<br>  这时，翻转率设置的节点是输入，响应的翻转率为:Tr = 20/1000 = 0.02GHz</li>
+<li>SAIF文件:即switching activity interchange format，开关行为内部交换格式文件，用于仿真器和功耗分析之间交换信息的ASCII文件(美国标准信息交换码文件)。</li>
+<li>VCD文件，即value change dump 文件，它也是一个ASCII文件，文件中包括了一个设计中所选择变量值的变化信息，这些信息通过在仿真testbench中使用“VCD系统函数”得到。</li>
+</ul>
+</blockquote>
+<p>在Synopsys的低功耗设计流程里面，可以使用power compiler（包含在design compiler中）进行功耗分析。我们可以通过命令来定义节点的翻转率的方法来分析功耗—-称为无向量(vector-free)分析法;由于SAIF文件和VCD文件可以通过对电路仿真得到，它们是仿真接口格式文件，因此也可以通过VCS仿真器产生SAIF或者VCD文件的方法分析功耗。当要分析的结果比较精确时，一般使用SAIF文件或者VCD文件（VCD文件通过相关命令转换成SAIF文件，而后使用SAIF进行功耗分析）。</p>
+<h2 id="二、无向量分析法"><a href="#二、无向量分析法" class="headerlink" title="二、无向量分析法"></a>二、无向量分析法</h2><p>前面我们说到，无向量分析法就是通过命令来定义节点的翻转率的方法来分析功耗。我们先来逐条学习需要什么的命令，然后在后面进行举例说明无向量分析法的脚本。<br>在学习设置翻转率的命令之前，我们先来了解一下什么是设计的传播起点和黑盒子。我们定义传播的起点为设计的输入端和黑盒子的输出端，黑盒子是指在工艺库里没有功能描述的单元（比如ROM 、RAM或者一些IP核）。例如对于下面的设计中：</p>
+<p><img src="/images/digital-IC-2/3.jpg" width="70%" heiht="70%"></p>
+<p>上面的设计有三处起点，一处是整个设计的输入端，一处是黑盒子的输出端，还有一处是某个单元的输入端。最后一处的起点不包含在我们的定义中，但是我们也把它当做起点，因为这是被标记了翻转率，这个我们后面进行讲解。<br>利用无向量分析法分析功耗时，我们不必提供设计内部节点的翻转率，而是通过设置起点的翻转率就行了。我们有两种方法设置翻转率，一种是通过设置翻转变量，一种是通过标记的方法。下面我们就来介绍如何通过这两种方法进行设置翻转率。</p>
+<h3 id="1-设置翻转变量"><a href="#1-设置翻转变量" class="headerlink" title="1. 设置翻转变量"></a>1. 设置翻转变量</h3><p>在power compiler中，可以设置下面的两个翻转变量进行设置翻转率：</p>
+<h4 id="power-default-toggle-rate"><a href="#power-default-toggle-rate" class="headerlink" title="power_default_toggle_rate"></a>power_default_toggle_rate</h4><p>定义方式是：set   power_default_toggle_rate   翻转值<br>这个翻转值不是翻转率，这个变量定义的翻转率是个相对的值：</p>
+<blockquote>
+<ul>
+<li>如果设计定义了时钟，这个power_default_toggle_rate变量定义的翻转率就以最快的时钟为参考，比如翻转值为0.5时，设计中最快的时钟为10ns，那么翻转率Tr = 0.5/10ns = 0.05GHz，也就是整个设计中默认的翻转率是0.05GHz。</li>
+<li>如果设计中没有时钟，那么就会以工艺库中的时间单位作为参考，例如工艺库中的时间单位是ns，翻转值为0.5，那么翻转率Tr = 0.5/1ns = 0.5GHz。</li>
+</ul>
+</blockquote>
+<h5 id="power-default-static-probability"><a href="#power-default-static-probability" class="headerlink" title="power_default_static_probability"></a>power_default_static_probability</h5><p>这个设置的是默认的静态概率，也就是起点的逻辑值是1的概率。至于静态概率，这里就不详细描述了。这两个变量的默认翻转值都是0.5，翻转率是很大的，一般情况下需要减小一点，比如设置为0.01和0.02这样的。<br>一般情况下，默认的翻转率是设置在起点上的，也就是说起点的翻转率用的是power_default_toggle_rate这个变量设置的翻转率，内部节点的翻转率可以通过传播得到，如下图所示：</p>
+<p><img src="/images/digital-IC-2/4.jpg" width="70%" heiht="70%"></p>
+<p>需要说明的是，传播不可以穿过没有功能描述的黑盒子，也就是不能通过传播的方式得到黑盒子的输出翻转率，因此我们在最前面就定义了，将黑盒子的输出当做起点，这样其他节点的翻转率可以通过传播得到（包括黑盒子的输入），黑盒子输出的翻转率通过默认设置的翻转率得到，我们就得到了设计中所有节点的翻转率。</p>
+<h4 id="2-标记翻转率"><a href="#2-标记翻转率" class="headerlink" title="2. 标记翻转率"></a>2. 标记翻转率</h4><p>上面的方式设置的是默认的翻转率。当我们需要为某个节点标记某个指定的翻转率，而不是使用默认的翻转率时，我们就用到了标记频率，如下图所示：</p>
+<p><img src="/images/digital-IC-2/5.jpg" width="70%" heiht="70%"></p>
+<p>单元A的输入端口标记了特定翻转率，比如说0.04GHz。标记的翻转率比传播的翻转率优先级更高，被标记翻转率的节点将作为一个新的起点，这就不属于起点的定义，但还是叫它为起点的原因。标记翻转率之后，这个单元后续的节点的翻转率将通过这个新标记的翻转率传播得到。<br>设置标记翻转率（简称设置翻转率）的命令主要有两条：</p>
+<blockquote>
+<ul>
+<li>set_switching_activity ：设置某个节点的翻转率和静态概率，在使用无向量分析法估算功耗的时候，这个命令被广泛使用，越多的节点上被标记翻转率，估算功耗的精度就越高。</li>
+<li>set_case_analysis 用来指定一个静态逻辑值，也就是设置信号为常数，不进行翻转</li>
+</ul>
+</blockquote>
+<h2 id="三、SAIF文件分析"><a href="#三、SAIF文件分析" class="headerlink" title="三、SAIF文件分析"></a>三、SAIF文件分析</h2><p>在介绍一下使用SAIF文件的方法进行功耗分析之前，我们先来介绍一下综合不变物体和综合变化物体的概念，下图为一个电路的RTL设计和门级设计：</p>
+<p><img src="/images/digital-IC-2/6.jpg" width="70%" heiht="70%"></p>
+<p>根据定义，在综合前和综合后，设计中的寄存器数目和寄存器的结构是不变的，输入/输出端口和层次边界是不变的，设计中的黑盒子是不变的。这些不变的物体称为综合不变物体(Synthesis Invariant Objects，有时候也叫综合不变对象)。设计中大部分的组合电路生成与设计约束有很大的关系，不同的约束产生不同的组合电路。这些变化的物体称为综合变化的物体(Synthesis Variant Objects)。由于SAIF文件中涉及这两个概念，这里先进行介绍。<br>介绍完这两个概念之后，下面我们就来了解一下使用SAIF进行功耗分析。SAIF文件当做翻转率输入文件的方法有两种方式，也就是说利用SAIF进行功耗分析有两种方法——对RTL级的电路仿真后得到的SAIF文件（称为RTL backward SAIF） 以及  对门级网表的电路仿真后得到的文件（称为Gate backward SAIF）。下面逐个进行具体介绍。</p>
+<h3 id="1-SAIF–RTL-BACK分析法"><a href="#1-SAIF–RTL-BACK分析法" class="headerlink" title="1. SAIF–RTL BACK分析法"></a>1. SAIF–RTL BACK分析法</h3><p>RTL backward SAIF文件是通过对RTL代码进行仿真得到的，当设计很大的时候，门级仿真时间就会很长，这时候就可以使用这种方法进行分析。使用这种方法进行分析功耗的速度比较快，但是精度不够门级仿真SAIF文件的高。</p>
+<h4 id="RTL-Forward-SAIF文件"><a href="#RTL-Forward-SAIF文件" class="headerlink" title="RTL Forward SAIF文件"></a>RTL Forward SAIF文件</h4><p>RTL forward SAIF文件是记录RTL设计中综合不变物体的开关行为文件，可以简单地理解：RTL forward SAIF文件简要地记录了综合不变物的翻转率。RTL backward SAIF文件的产生需要RTL forward SAIF文件，因此我们首先需要产生RTL forward  SAIF文件。产生RTL  forward  SAIF文件的流程如下：</p>
+<p><img src="/images/digital-IC-2/7.jpg" width="70%" heiht="70%"></p>
+<p>RTL  forward  SAIF文件是由power compiler （包含在design compiler中）产生的，根据流程，我们知道，主要设置一些变量，然后读入RTL设计（RTL.v设计），接着读出SAIF文件就可以了。相应的脚本如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">set  power_preserve_rtl -hier_names  true</span><br><span class="line">read_verilog   &quot;sub.v top. v&quot;</span><br><span class="line">rtl2saif  -output  fwd_rtl.saif</span><br></pre></td></tr></table></figure>
+<h4 id="RTL-Backward-SAIF文件"><a href="#RTL-Backward-SAIF文件" class="headerlink" title="RTL Backward SAIF文件"></a>RTL Backward SAIF文件</h4><p>下面是产生RTL backward SAIF文件的流程：</p>
+<p><img src="/images/digital-IC-2/8.jpg" width="70%" heiht="70%"></p>
+<p>从上图中，我们知道，产生RTL backward SAIF文件，需要在仿真器输入testbench测试平台文件、RTL.v设计、RTL forward SAIF文件，然后使用VCS产生RTL forward SAIF文件时，需要在testbench调用PLI监测节点的翻转率。下面我们就来介绍一下这几个部分。</p>
+<blockquote>
+<ul>
+<li>首先是PLI。使用VCS产生SAIF文件，需要用到程序设计语言接口（programming language interface，PLI）。通过PLI监测节点的翻转，得到节点的翻转率</li>
+<li>RTL.v就是设计源文件了，然后RTL forward SAIF文件</li>
+<li>最后是testbench。testbench中调用RTL设计、调用一下上述的PLI系统函数、调用RTL forward SAIF文件等</li>
+</ul>
+</blockquote>
+<h4 id="功耗的分析"><a href="#功耗的分析" class="headerlink" title="功耗的分析"></a>功耗的分析</h4><p>对RTL代码仿真后，所得到的RTL Backward SAIF文件包含了设计中综合不变物体的开关行为信息。进行功耗分析时，分析工具通过其内部仿真器把综合不变物体的翻转率传播下去，从而得到其他所有节点的翻转率，进行门级电路的功耗分析。得到了RTL backward SAIF文件之后，我们根据前面的功耗分析的流程(从输入输出关系看)，就可以分析功耗了：</p>
+<p><img src="/images/digital-IC-2/9.jpg" width="70%" heiht="70%"></p>
+<p>这里的开关活动文件就是RTL backward SAIF文件了。然后在power compiler中利用RTL backward SAIF文件进行功耗分析的流程如下所示：</p>
+<p><img src="/images/digital-IC-2/10.jpg" width="70%" heiht="70%"></p>
+<p>利用RTL backward SAIF文件分析功耗的过程就是上面这个样子了。上面的流程和脚本适用于前版图(pre-layout)的设计，没有用到寄生参数文件。连线的RC参数使用工艺库里的线负载模型。如果是后版图(post-layout)的设计，要尽量使用寄生参数文件，提高功耗分析的精确度。</p>
+<p>从上面我们就知道，利用RTL backward SAIF文件分析功耗的流程就是：<br>power compiler 产生 RTL forward SAIF文件 ——》VCS仿真产生RTL  backward SAIF文件 ——》power compiler 进行分析功耗。</p>
+<h3 id="SAIF–GATE分析法"><a href="#SAIF–GATE分析法" class="headerlink" title="SAIF–GATE分析法"></a>SAIF–GATE分析法</h3><p>前面介绍了RTL backward SAIF文件分析功耗的方法和流程，下面介绍一下Gate backward SAIF文件分析功耗的方法和流程，这个与RTL backward SAIF文件的很类似。</p>
+<h4 id="library-forward-SAIF-文件（简称为-库SAIF文件）"><a href="#library-forward-SAIF-文件（简称为-库SAIF文件）" class="headerlink" title="library  forward  SAIF 文件（简称为 库SAIF文件）"></a>library  forward  SAIF 文件（简称为 库SAIF文件）</h4><p>库SAIF文件是包含SDPD（电路状态路径）信息的SAIF文件。Gate backward SAIF文件的生成需要库SAIF文件，该文件可以通过power compiler生成，流程如下所示：</p>
+<p><img src="/images/digital-IC-2/11.jpg" width="70%" heiht="70%"></p>
+<h4 id="Gate-Backward-SAIF文件的生成"><a href="#Gate-Backward-SAIF文件的生成" class="headerlink" title="Gate Backward SAIF文件的生成"></a>Gate Backward SAIF文件的生成</h4><p>下面是产生gate backward SAIF文件的流程：</p>
+<p><img src="/images/digital-IC-2/12.jpg" width="70%" heiht="70%"></p>
+<p>从上图中我们可以看到，产生gate backward SAIF需要testbench测试平台、门级网表、标准延时格式（standard delay format）文件SDF、库SAIF文件。其中SDF文件反标了门级网表中的RC延时参数等，可以更为准确地得到线网的延时。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">module testbench;</span><br><span class="line">top instl (a, b, c，s);</span><br><span class="line"></span><br><span class="line">$sdf_annotate(&quot;my.sdf&quot;,dut)</span><br><span class="line"></span><br><span class="line">initial begin</span><br><span class="line">  $read_lib_saif (&quot;mylib.saif&quot;);</span><br><span class="line">  $set_toggle_region (u1);</span><br><span class="line">  $toggle_start;</span><br><span class="line">  #120  a=0;</span><br><span class="line">  #STEP  in_ a=temp_in_a;</span><br><span class="line">  ······</span><br><span class="line">  $toggle_stop;</span><br><span class="line">  $toggle-report(&quot;gate.saif&quot;,1.0e-9,&quot;top&quot;)</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">endmodule//testbench</span><br></pre></td></tr></table></figure>
+<p>testbench测试平台主要是调用门级网表、SDF文件、库SAIF文件。testbench中，用$sdf_annotate(“my. sdf”, dut)命令作SDF标记，以保证时序的正确性，从而得到正确的翻转数目。$ read_lib_saif (“mylib. saif”)命令读取库SAIF文件中的SDPD信息。仿真器只监视在SAIF文件里列出的SDPD开关行为。$ set_toggle_region (u1)命令选择要监视的模块。$ toggle_start和$toggle_stop命令控制开始和结束时间。$ toggle_report(“gate. saif”,1. 0e-9, “top”)命令把SAIF输出到指定的文件。<br>万事俱备，只欠仿真，接下来就是使用VCS进行仿真了：<br>    vcs   -R   top.v   testbench. v<br>注意，这里的仿真是对门级网表的仿真，也就是说这里的top.v是门级网表。Gate Backward SAIF文件是通过对门级网表进行仿真所得到的。如果设计很大，仿真需要的时间很长。好处是精确度很高。VCS所产生的Gate Backward SAIF文件中包含了一些或所有连线的开关行为和单元的开关行为。这些开关行为分别以上升和下降表示，与状态和路径有关。用这个信息可以进行精确的功耗分析。</p>
+<h4 id="功耗分析"><a href="#功耗分析" class="headerlink" title="功耗分析"></a>功耗分析</h4><p>有了门级网表、gate backward SAIF文件和SDF文件，就可以在power  compiler中进行功耗分析了，分析功耗的流程图如下所示:</p>
+<p><img src="/images/digital-IC-2/13.jpg" width="70%" heiht="70%"></p>
+<p>对应的一个示例脚本文件如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">set target_library  mylib.db</span><br><span class="line">set link_library &quot; * $target_library&quot;</span><br><span class="line">read_verilog  mynetlist.v</span><br><span class="line">current_design  top</span><br><span class="line">link</span><br><span class="line">read_read_parasitics  top.spef</span><br><span class="line">read_ saif -input  mygate. saif  -inst  tb/top</span><br><span class="line">report_power</span><br></pre></td></tr></table></figure>
+<p>上面的流程和脚本适用于后版图(post-layout)的设计，spef文件在做完版图后产生。使用寄生参数文件，提高了功耗分析的精确度。如果是前版图( pre-layout)的设计，没有寄生参数文件，连线的RC参数使用工艺库里的线负载模型。<br>最后总结一下，这里分析功耗流程为：<br>power compiler 产生库SAIF文件——》VCS产生gate backward SAIF文件——》power compiler进行功耗分析。</p>
+<h3 id="VCD转SAIF分析法"><a href="#VCD转SAIF分析法" class="headerlink" title="VCD转SAIF分析法"></a>VCD转SAIF分析法</h3><p>前介绍了使用SAIF文件分析功耗的方法，这个方法都是通过VCS仿真得到相应的SAIF文件，然后进行功耗分析。下面我们介绍使用VCD文件转换成SAIF文件的方法，然后进行功耗分析。</p>
+<h4 id="VCD文件的产生"><a href="#VCD文件的产生" class="headerlink" title="VCD文件的产生"></a>VCD文件的产生</h4><p>首先，我们在进行仿真的时候，需要通过在testbench中加入相关的系统函数，产生相应的VCD文件（和SDF文件），流程示意图如下所示：</p>
+<p><img src="/images/digital-IC-2/14.jpg" width="70%" heiht="70%"></p>
+<h4 id="VCD文件转换成SAIF文件"><a href="#VCD文件转换成SAIF文件" class="headerlink" title="VCD文件转换成SAIF文件"></a>VCD文件转换成SAIF文件</h4><p>仿真时产生的VCD文件也包含了设计中节点和连线的开关行为。在Power Compiler中，可以使用程序vcd2saif可以把VCD文件转化为SAIF文件，如下图所示：</p>
+<p><img src="/images/digital-IC-2/15.jpg" width="70%" heiht="70%"></p>
+<p>vcd2saif是在UNIX命令行使用的一个程序。vcd2saif程序也可以把VPD文件(二进制格式的VCD文件)转化为SAIF格式的文件。如果设计很大，仿真的时间长，vcd2saif程序可以用管道传递的方式把VCD转化为SAIF文件。这时vcd文件不存放在文件里，vcd通过先入先出(First-In  First-()nt，简称FIFO把数据传给vcd2saif程序，然后产生SAIF文件。转换的SAIF文件里没有SDPD的信息。如下图所示：</p>
+<p><img src="/images/digital-IC-2/16.jpg" width="70%" heiht="70%"></p>
+<p>有了SAIF文件之后，我们就可以像前面那样使用SAIF文件进行功耗分析了，至于是版图前的功耗分析还是版图后的功耗分析，取决于功耗分析时有没有与版图中有关的信息，比如是SPEF文件。因此流程为：<br>VCS产生VCD文件——》power compiler 将VCD文件转换为SAIF文件——》power compiler 进行分析功耗<br>最后，我们来说一下这里使用vcd2saif程序的好处，主要有下面三点：</p>
+<blockquote>
+<ol>
+<li>VCD产生的速度快</li>
+<li>VCD是IEEE的标准并且适用于进行后仿真</li>
+<li>转换的过程快</li>
+</ol>
+</blockquote>
+<p>我们已经介绍四种为设计产生开关行为的方法，分别是直接设置翻转率、RTL backward SAIF文件、gate back SAIF文件和VCD转SAIF文件；这些方法可以混合使用，其优先次序如下所示：</p>
+<p><img src="/images/digital-IC-2/17.jpg" width="70%" heiht="70%"></p>
+<p>用read_saif命令标记的开关行为优先级最高;用set_switching_activity命令设置的开关行为优先级次之;优先级最低的是用默认的变量power_default_toggle_rate指定的翻转率。<br>开关行为可以被清除，使用“reset_switching_activity”命令可以清除所有被标记的翻转率和通过传输得到的翻转率。用report_saif可以显示读入saif文件后设计中的开关行为信息。一个完整的SAIF文件，”user annotated”应该是100%。如果SAIF不完整，那么默认的翻转率将附加到输入端和黑盒子的输出端。翻转率通过零延迟仿真传输下去，这样就可以计算出设计的功耗。<br>与开关行为有关的命令有:</p>
+<blockquote>
+<p>  merge_saif #合并SAIF文件<br>  read_sai f #读backward SAIF文件<br>  report_saif #报告开关行为的信息<br>  rtl2saif #产生RTL forward SAIF文件<br>  write_saif #写出一个backward SAIF文件<br>  lib2saif #产生library forward SAIF文件<br>  propagate_switching_activity #传输功耗清除<br>  reset_switching_activity #清除开关行为和/或翻转率<br>  set_switching_activity #在指定的物体上设置开关行为</p>
+</blockquote>
+<h2 id="四、功耗分析报告"><a href="#四、功耗分析报告" class="headerlink" title="四、功耗分析报告"></a>四、功耗分析报告</h2><p>我们是通过分析功耗报告（report_power命令产生）来查看设计功耗的，一个功耗报告的示例部分内容如下所示：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Cell  Internal  Power=883.0439 mW(66%)</span><br><span class="line">Net  Switching Power=453.0173 mW(34%)</span><br><span class="line">Total  Dynamic  Power=1 .3361 W(100%)</span><br><span class="line">Cell Leakage Power = 391.5133 nW</span><br></pre></td></tr></table></figure></p>
+<p>其中第一项为内部短路功耗，第二项为开关功耗，合起来为动态功耗；最后一项为静态功耗，也就是泄漏功耗。如果要报告设计中每个模块和单元的功耗，在report_power命令后加选项 -hier，例如:  report_power  -hier，产生的报告如下所示：</p>
+<p><img src="/images/digital-IC-2/18.jpg" width="70%" heiht="70%"></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/05/08/digital-ic-low-power-design-1/" rel="next" title="数字IC低功耗设计入门（一）- 低功耗设计目的与功耗的类型">
+                <i class="fa fa-chevron-left"></i> 数字IC低功耗设计入门（一）- 低功耗设计目的与功耗的类型
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Holmes Shen</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/shensongjian" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:shensongjian@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、功耗分析与流程概述"><span class="nav-number">1.</span> <span class="nav-text">一、功耗分析与流程概述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-功耗分析流程的输入输出"><span class="nav-number">1.1.</span> <span class="nav-text">1. 功耗分析流程的输入输出</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-开关行为的一些概念"><span class="nav-number">1.2.</span> <span class="nav-text">2. 开关行为的一些概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-开关行为-文件-情况表示"><span class="nav-number">1.3.</span> <span class="nav-text">3. 开关行为(文件)情况表示</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、无向量分析法"><span class="nav-number">2.</span> <span class="nav-text">二、无向量分析法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-设置翻转变量"><span class="nav-number">2.1.</span> <span class="nav-text">1. 设置翻转变量</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#power-default-toggle-rate"><span class="nav-number">2.1.1.</span> <span class="nav-text">power_default_toggle_rate</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#power-default-static-probability"><span class="nav-number">2.1.1.1.</span> <span class="nav-text">power_default_static_probability</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-标记翻转率"><span class="nav-number">2.1.2.</span> <span class="nav-text">2. 标记翻转率</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、SAIF文件分析"><span class="nav-number">3.</span> <span class="nav-text">三、SAIF文件分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-SAIF–RTL-BACK分析法"><span class="nav-number">3.1.</span> <span class="nav-text">1. SAIF–RTL BACK分析法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#RTL-Forward-SAIF文件"><span class="nav-number">3.1.1.</span> <span class="nav-text">RTL Forward SAIF文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RTL-Backward-SAIF文件"><span class="nav-number">3.1.2.</span> <span class="nav-text">RTL Backward SAIF文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#功耗的分析"><span class="nav-number">3.1.3.</span> <span class="nav-text">功耗的分析</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SAIF–GATE分析法"><span class="nav-number">3.2.</span> <span class="nav-text">SAIF–GATE分析法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#library-forward-SAIF-文件（简称为-库SAIF文件）"><span class="nav-number">3.2.1.</span> <span class="nav-text">library  forward  SAIF 文件（简称为 库SAIF文件）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Gate-Backward-SAIF文件的生成"><span class="nav-number">3.2.2.</span> <span class="nav-text">Gate Backward SAIF文件的生成</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#功耗分析"><span class="nav-number">3.2.3.</span> <span class="nav-text">功耗分析</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#VCD转SAIF分析法"><span class="nav-number">3.3.</span> <span class="nav-text">VCD转SAIF分析法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#VCD文件的产生"><span class="nav-number">3.3.1.</span> <span class="nav-text">VCD文件的产生</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#VCD文件转换成SAIF文件"><span class="nav-number">3.3.2.</span> <span class="nav-text">VCD文件转换成SAIF文件</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、功耗分析报告"><span class="nav-number">4.</span> <span class="nav-text">四、功耗分析报告</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Holmes Shen</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
