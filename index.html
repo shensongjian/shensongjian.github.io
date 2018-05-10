@@ -233,6 +233,150 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/10/digital-ic-low-power-design-3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Holmes Shen">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="DeepLearning">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/05/10/digital-ic-low-power-design-3/" itemprop="url">数字IC低功耗设计入门（三）- 系统与架构级低功耗设计</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-10T09:40:09+08:00">
+                2018-05-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body han-init-context" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+<p>原文链接: <a href="http://www.cnblogs.com/IClearner/p/6903204.html" target="_blank" rel="noopener">http://www.cnblogs.com/IClearner/p/6903204.html</a></p>
+<p>前面讲解了使用EDA工具（主要是power compiler）进行功耗分析的流程，这里我们将介绍在数字IC中进行低功耗设计的方法，同时也结合EDA工具（主要是Design Compiler）如何实现。我们的讲解的低功耗设计主要是自顶向下的设计，也就是说，我们首先介绍在系统架构层面上如何进行低功耗设计（或者可以从哪些方面进行低功耗设计）；然后我们在RTL层面和门级层面上介绍低功耗设计的方法，这两个种方法主要是依靠RTL代码和Design Compiler实现的，这是我们前端设计人员进行低功耗设计与优化所需要知道的，我们会着重介绍；最后我们简单介绍在物理设计层次上面降低功耗的方法。今天我们记录系统与架构级的低功耗设计。<br>系统与架构层次的低功耗设计，可以节省70%以上的功耗。这个层次上的设计往往是由系统和架构设计人员进行的，这些人员往往是有着丰富经验的设计人员。他们制定了低功耗设计方案，由下一级的设计人员（比如做前端设计、做Flow的人员）进行具体实现。下面就来介绍一下在系统架构方面，可以从哪些方面进行低功耗设计，由于我只是只菜鸟，因此这些内容只是我在前人的经验中进行总结学习的笔记，仅供参考。</p>
+<blockquote>
+<ul>
+<li>多电压设计技术（Multi-VDD）<ul>
+<li>多电压设计技术介绍</li>
+<li>多电压设计举例</li>
+</ul>
+</li>
+<li>软/硬件协同设计<ul>
+<li>软硬件划分</li>
+<li>动态电压频率调节DVFS技术</li>
+<li>低功耗软件（操作系统）的动态功耗管理</li>
+</ul>
+</li>
+<li>系统时钟分配</li>
+<li>算法与IP选择</li>
+</ul>
+</blockquote>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/05/10/digital-ic-low-power-design-3/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/09/digital-ic-low-power-design-2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1108,7 +1252,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-count">7</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
