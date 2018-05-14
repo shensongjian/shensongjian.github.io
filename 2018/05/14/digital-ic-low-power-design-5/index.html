@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+  
+  
+  <link rel="stylesheet" media="all" href="/lib/Han/dist/han.min.css?v=3.3">
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Deep Learning" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="原文链接: http://www.cnblogs.com/IClearner/p/6912455.html 前面一篇博文我记录了操作数隔离等低功耗设计，这里就主要介绍一下使用门控时钟进行低功耗设计。   门控时钟概述 综合库中的门控时钟模型 门控时钟实现 门控时钟的处理 重新连接门控时钟 重新平衡门控时钟的扇出 合并门控时钟 删除门控时钟 手动插入门控时钟">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数字IC低功耗设计入门（五）— RTL级低功耗设计（续）">
+<meta property="og:url" content="http://yoursite.com/2018/05/14/digital-ic-low-power-design-5/index.html">
+<meta property="og:site_name" content="DeepLearning">
+<meta property="og:description" content="原文链接: http://www.cnblogs.com/IClearner/p/6912455.html 前面一篇博文我记录了操作数隔离等低功耗设计，这里就主要介绍一下使用门控时钟进行低功耗设计。   门控时钟概述 综合库中的门控时钟模型 门控时钟实现 门控时钟的处理 重新连接门控时钟 重新平衡门控时钟的扇出 合并门控时钟 删除门控时钟 手动插入门控时钟">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/digital-IC-5/1.jpg">
+<meta property="og:image" content="http://yoursite.com/images/digital-IC-5/2.jpg">
+<meta property="og:image" content="http://yoursite.com/images/digital-IC-5/3.jpg">
+<meta property="og:image" content="http://yoursite.com/images/digital-IC-5/4.jpg">
+<meta property="og:image" content="http://yoursite.com/images/digital-IC-5/5.jpg">
+<meta property="og:image" content="http://yoursite.com/images/digital-IC-5/6.jpg">
+<meta property="og:image" content="http://yoursite.com/images/digital-IC-5/7.jpg">
+<meta property="og:image" content="http://yoursite.com/images/digital-IC-5/8.jpg">
+<meta property="og:image" content="http://yoursite.com/images/digital-IC-5/9.jpg">
+<meta property="og:image" content="http://yoursite.com/images/digital-IC-5/10.jpg">
+<meta property="og:image" content="http://yoursite.com/images/digital-IC-5/11.jpg">
+<meta property="og:image" content="http://yoursite.com/images/digital-IC-5/12.jpg">
+<meta property="og:image" content="http://yoursite.com/images/digital-IC-5/13.jpg">
+<meta property="og:image" content="http://yoursite.com/images/digital-IC-5/14.jpg">
+<meta property="og:image" content="http://yoursite.com/images/digital-IC-5/15.jpg">
+<meta property="og:image" content="http://yoursite.com/images/digital-IC-5/16.jpg">
+<meta property="og:image" content="http://yoursite.com/images/digital-IC-5/17.jpg">
+<meta property="og:image" content="http://yoursite.com/images/digital-IC-5/18.jpg">
+<meta property="og:image" content="http://yoursite.com/images/digital-IC-5/19.jpg">
+<meta property="og:image" content="http://yoursite.com/images/digital-IC-5/20.jpg">
+<meta property="og:image" content="http://yoursite.com/images/digital-IC-5/21.jpg">
+<meta property="og:updated_time" content="2018-05-14T08:36:23.757Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="数字IC低功耗设计入门（五）— RTL级低功耗设计（续）">
+<meta name="twitter:description" content="原文链接: http://www.cnblogs.com/IClearner/p/6912455.html 前面一篇博文我记录了操作数隔离等低功耗设计，这里就主要介绍一下使用门控时钟进行低功耗设计。   门控时钟概述 综合库中的门控时钟模型 门控时钟实现 门控时钟的处理 重新连接门控时钟 重新平衡门控时钟的扇出 合并门控时钟 删除门控时钟 手动插入门控时钟">
+<meta name="twitter:image" content="http://yoursite.com/images/digital-IC-5/1.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/05/14/digital-ic-low-power-design-5/"/>
+
+
+
+
+
+  <title>数字IC低功耗设计入门（五）— RTL级低功耗设计（续） | DeepLearning</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">DeepLearning</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/14/digital-ic-low-power-design-5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Holmes Shen">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="DeepLearning">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">数字IC低功耗设计入门（五）— RTL级低功耗设计（续）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-14T15:03:05+08:00">
+                2018-05-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body han-init-context" itemprop="articleBody">
+
+      
+      
+
+      
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+<p>原文链接: <a href="http://www.cnblogs.com/IClearner/p/6912455.html" target="_blank" rel="noopener">http://www.cnblogs.com/IClearner/p/6912455.html</a></p>
+<p>前面一篇博文我记录了操作数隔离等低功耗设计，这里就主要介绍一下使用门控时钟进行低功耗设计。</p>
+<blockquote>
+<ul>
+<li>门控时钟概述</li>
+<li>综合库中的门控时钟模型</li>
+<li>门控时钟实现</li>
+<li>门控时钟的处理<ul>
+<li>重新连接门控时钟</li>
+<li>重新平衡门控时钟的扇出</li>
+<li>合并门控时钟</li>
+<li>删除门控时钟</li>
+<li>手动插入门控时钟</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<a id="more"></a>
+<h2 id="五、门控时钟"><a href="#五、门控时钟" class="headerlink" title="五、门控时钟"></a>五、门控时钟</h2><p>门控时钟在我的第一篇博客中有简单的描述，这里就进行比较详细的描述吧。我们主要学习门控时钟电路是什么、综合库里的门控时钟、如何使用门控时钟、对门控时钟的一些处理、手动插入门控时钟。我们重点介绍如何使用门控时钟和门控时钟的处理。</p>
+<h3 id="门控时钟概述"><a href="#门控时钟概述" class="headerlink" title="门控时钟概述"></a>门控时钟概述</h3><p>门控时钟有两种方案:一种直接针对寄存器的时钟进行门控，一种对模块级别的时钟进行门控。相比之下，直接对寄存器的时钟进行门控更为灵活。因为在很多时候，我们不能保证刚好将不需要门控的寄存器与需要门控的寄存器分配在不同的模块。因此我们主要介绍寄存器级的门控时钟。<br>下图是门控时钟的一个简单电路图：</p>
+<p><img src="/images/digital-IC-5/1.jpg" width="70%" heiht="70%"></p>
+<p>上述电路图中，将控制信号(EN)直接与时钟信号(CLK)进行与操作，以完成门控。门控后的时钟信号GCLK送到寄存器阵列中。这样，当EN为0时，该时钟被关掉。相应的波形如下所示：</p>
+<p><img src="/images/digital-IC-5/2.jpg" width="70%" heiht="70%"></p>
+<p>可以看出，如果EN信号不加控制，会导致门控时钟信号出现毛刺。时钟上的信号出现毛刺是非常危险的。所以在进行门控时，为了使门控时钟不产生毛刺，使能信号必须满足条件:它是寄存器的输出，该寄存器的时钟信号与要门控的时钟信号是相同的。由于上述原因，虽然采用这种门控方式最直接，但在实际中很少采用。<br>为了解决这种问题，引入基于锁存器的门控时钟方案，如下图所示：</p>
+<p><img src="/images/digital-IC-5/3.jpg" width="70%" heiht="70%"></p>
+<p>对应的时序图如下所示：</p>
+<p><img src="/images/digital-IC-5/4.jpg" width="70%" heiht="70%"></p>
+<p>可以看到，这种方式消除了EN与CLK组合产生的毛刺对门控时钟的影响。该方法的原理在于:锁存器在CLK为低时透明。这样，EN 信号上的毛刺仅出现在CLK的低电平处，EN1与CLK进行与操作，可以将这部分毛刺消除掉。这样，GCLK上就没有毛刺了。<br>不过需要注意的是，如果在电路中，锁存器与与门相隔很远，到达锁存器的时钟与到达与门的时钟有较大的延迟差别，则仍会出现毛刺，下面就来分析一下：</p>
+<p><img src="/images/digital-IC-5/5.jpg" width="70%" heiht="70%"></p>
+<p>上述的右上图中，B点的时钟比A时钟迟到，并且Skew &gt; delay，这种情况下，产生了毛刺。为了消除毛刺，要控制Clock Skew，使它满足Skew &gt;Latch delay（也就是锁存器的clk-q的延时）。上述的右下图中，B点的时钟比A时钟早到，并且|Skew|  &gt; ENsetup 一 (D-&gt;Q)，这种情况下，也产生了毛刺。为了消除毛刺，要控制Clock Skew，使它满足|Skew|&lt; ENsetup一(D-&gt;Q)。<br>常见的是第一种毛刺，不过我们可以将这个逻辑做成一个单元，这样就基本上能消除上面的那两种毛刺了，即：</p>
+<p><img src="/images/digital-IC-5/6.jpg" width="70%" heiht="70%"></p>
+<p>通常情况下，时钟树由大量的缓冲器和反相器组成，时钟信号为设计中翻转率最高的信号，时钟树的功耗可能高达整个设计功耗30%。加入门控时钟电路后，由于减少了时钟树的开关行为，节省了开关功耗。同时，由于减少了时钟引脚的开关行为，寄存器的内部功耗也减少了。采用门控时钟，可以非常有效地降低设计的功耗，一般情况下能够节省20%~60%的功耗。<br>此外，由于门控时钟不需要用到MUX单元，加入门控时钟电路后，设计的面积也减少了。门控时钟电路的扇出越大，减低功耗和面积的效能越好。当然，扇出太大了，又会产生时序等的问题。<br>门控时钟电路非常容易实现，用工具自动插入门控时钟，不需要修改RTL代码，门控时钟与工艺无关。<br>这些优点本来应该放在总结处说的，这里提前进行叙述是为了能够给大家一个印象。其中低功耗的优点是通篇进行讲解的，然后降低面积和实现的问题，我们会在后面的具体实现进行讲解。</p>
+<h3 id="综合库中的门控时钟模型"><a href="#综合库中的门控时钟模型" class="headerlink" title="综合库中的门控时钟模型"></a>综合库中的门控时钟模型</h3><p>前面我们说了，门控时钟可以以三种方式实现：一个与门（即不带锁存的门控时钟）、分散的锁存器+与门、集成的锁存器+与门。在综合库中，与门、锁存器是基本逻辑单元，因此可以构成门控时钟。此外，综合库中还专门提供了集成的门控单元。一般情况下，我们使用的是集成的门控单元，因为这个门控单元是对Skew作了控制，不存在前面描述的毛刺问题。<br>一个示例的  综合库中的时钟门控单元描述如下所示：该综合库模型中，E为门控信号;CK为时钟信号;ENL是锁存器输出;ECK为对输出门控后的时钟信号;statetable描述了该门控单元中内部锁存器的功能。该单元的其他内容描述就不具体描述了，我在Tcl与Design Compiler这个分类的博客里面有对综合库进行具体的介绍。</p>
+<p><img src="/images/digital-IC-5/7.jpg" width="70%" heiht="70%"><br><img src="/images/digital-IC-5/8.jpg" width="70%" heiht="70%"></p>
+<h3 id="门控时钟实现"><a href="#门控时钟实现" class="headerlink" title="门控时钟实现"></a>门控时钟实现</h3><p>我们要实现门控时钟，首先就得从RTL代码中进行设置。在RTL代码中将需要门控的寄存器写成“载入-使能”的形式，如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">always  @(posedge CLK) begin</span><br><span class="line">  if (EN) Q &lt;=D;</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+<p>上述代码中，如果EN有效，则寄存器在时钟上升沿采样数据，否则保持原值。一般情况下，综合会得到下图右上角的电路，而插入门控时钟的电路为下图右下角的电路：</p>
+<p><img src="/images/digital-IC-5/9.jpg" width="70%" heiht="70%"></p>
+<p>上图的典型综合结果中（即不使用门控时钟的情况），在每个受EN使能控制的寄存器之前加入了一个MUX，当EN信号有效时，寄存器锁存输入信号D;否则保持原值。这种方法也能减少寄存器上的翻转，因而节省翻转功耗。然而，这种“载入一使能”结构中，每个寄存器都有一个MUX，假设MUX面积为4，则8位寄存器需要增加的面积为32。面积越大，意味着芯片成本越高，而且整体的功耗也会增加。另外，这种方式不能消除时钟树上的功耗。<br>对于右下角的门控时钟形式的综合电路，假设一个门控逻辑的面积为10，一个门控时钟信号可以驱动8位寄存器，则在门控时钟电路中，对每8个寄存器需增加一个门控逻辑，增加的面积为10。由此可以看到，门控时钟的电路比普通综合结果的面积更小、功耗更低。<br>鉴于门控时钟的优点，我们需要把普通的综合结果“转换”为门控时钟的结果，我们主要是通过DC的power compiler来自动实现的。我们主要通过命令来设置门控时钟的风格和通过命令“启动”插入门控时钟。综合工具根据我们所设置的时钟门控的风格，插入相应的门控逻辑。因此，门控时钟的实现主要有两步，一步是设置门控时钟的风格，通过命令set_clock_gating_stale 及其选项来实现；另一步就是在网表中加入门控时钟，通过命令insert_clock_gating来实现。下面我们就来介绍一下这两个设置，由于命令在不同版本的DC中有所不同，命令的具体选项就可能不一样，这里就只介绍一些常用或者说是可能用到的选项。<br>在执行insert_clock_gating命令前，我们一般先使用set_clock_gating_style命令来指定要插入门控时钟电路的结构(或者说是插入门控时钟的风格)。下面我们就来介绍一下使用这个set_clock_gating_style命令可以进行插入哪些门控时钟电路结构。</p>
+<h4 id="sequential-cell选项"><a href="#sequential-cell选项" class="headerlink" title="-sequential_cell选项"></a>-sequential_cell选项</h4><p>设置是否采用基于锁存器的风格。因为我们的门控时钟有三种形式（不适用锁存器的与门，基于锁存器+离散与门，集成的锁存器+与门），因此就要指定使用哪一种形式：</p>
+<blockquote>
+<ul>
+<li>基于锁存器的离散门控单元是默认值，可以通过下面的命令来设置：</li>
+</ul>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">set_clock_gating_style   -sequential_cell  latch</span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li>不使用锁存器的门控单元，可以通过下面的命令来设置：</li>
+</ul>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">set_clock_gating_style   -sequential_cell  none</span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li>使用集成的门控单元，可以通过下面的命令来设置：</li>
+</ul>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">set_clock_gating_style &quot;integrated&quot;</span><br></pre></td></tr></table></figure>
+<p>一般推荐使用集成门控这种方式。</p>
+<h4 id="positive-edg-logic选项（简写为-positive或-pos）"><a href="#positive-edg-logic选项（简写为-positive或-pos）" class="headerlink" title="-positive_edg_logic选项（简写为-positive或-pos）"></a>-positive_edg_logic选项（简写为-positive或-pos）</h4><p>设置在RTL代码中用上升沿锁存的寄存器（也就是上升沿沿触发的寄存器）采用何种门控逻辑。</p>
+<h4 id="negative-edg-logic选项（简写为-negative或-neg）"><a href="#negative-edg-logic选项（简写为-negative或-neg）" class="headerlink" title="-negative_edg_logic选项（简写为-negative或-neg）"></a>-negative_edg_logic选项（简写为-negative或-neg）</h4><p>设置在RTL代码中用下降沿锁存的寄存器（也就是下降沿触发的寄存器）采用何种门控逻辑。</p>
+<h4 id="minimum-bitwidth-选项"><a href="#minimum-bitwidth-选项" class="headerlink" title="-minimum_bitwidth 选项"></a>-minimum_bitwidth 选项</h4><p>设置进行时钟门控的寄存器阵列的最小宽度。对于宽度小于该设置的寄存器阵列，不进行时钟门控；然而当电路由有公共使能时，会对电路进行分解进行集体门控。例如下面的命令作用与下面的电路：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">set_clock_gating_style  -minimum_bitwidth  4</span><br></pre></td></tr></table></figure></p>
+<p><img src="/images/digital-IC-5/10.jpg" width="70%" heiht="70%"></p>
+<p>上述命令意味着一个门控时钟至少要触发4个寄存器。左图中有3个寄存器组，每组只有3个寄存器，不能满足至少要有4个寄存器的要求。因此，对于每个组的寄存器，不能用门控时钟。然而，所有的3个寄存器组，都有1个公共的使能信号”a”，我们可以把它分解出来作为控制时钟的门控信号。这样一来，信号“a”控制9个寄存器，它满足最少要触发4个寄存器的要求。因此将上面的命令约束上面左边的电路时，综合得到结果就会成为右边有门控时钟的电路。</p>
+<h4 id="num-stages选项"><a href="#num-stages选项" class="headerlink" title="-num_stages选项"></a>-num_stages选项</h4><p>设置一个多级门控的级数。在有些设计中，顶层的门控信号会分解成不同的子门控信号。在缺省情况下，仅对跟寄存器阵列相连的门控制信号生成门控逻辑。例如对于下面的电路图：</p>
+<p><img src="/images/digital-IC-5/11.jpg" width="70%" heiht="70%"></p>
+<p>在这个例子中，全局门控信号EN分别跟a,b,c信号组合，然后驱动不同的寄存器阵列。缺省情形下（set_clock_gating_style命令的默认设置为“num_stages”等于“1”,缺省时也为1），跟寄存器阵列相连的门控信号   由门控单元给出。<br>由于所有的3个寄存器组都有1个公共使能“a”，它可以被分解出来产生1个额外(级)的门控时钟单元。在set_clock_gating_style命令加选项“-num_stages 2”，就可以产生下图所示的两级门控时钟：</p>
+<p><img src="/images/digital-IC-5/12.jpg" width="70%" heiht="70%"></p>
+<p>使用多级门控时钟，时钟综合器可以尽量地摆放门控时钟单元，使它靠近时钟源，从而最大限度地降低时钟树的功耗。</p>
+<h4 id="control-point与-control-signal选项"><a href="#control-point与-control-signal选项" class="headerlink" title="-control_point与-control_signal选项"></a>-control_point与-control_signal选项</h4><p>设置该门控单元在DFT时是否可控，DFT控制信号是scan-enable还是test-mode，以及DFT控制信号与EN信号的组合逻辑是放在门逻辑中的锁存器之前还是之后。通常，将DFT控制信号与EN信号进行或操作，这样在DFT时，可以控制该门控逻辑。例如下面的命令约束：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">set_clock_gating_style  -control_point  before  -control_signal test_mode</span><br></pre></td></tr></table></figure>
+<p>设置得到下面的电路结构：</p>
+<p><img src="/images/digital-IC-5/13.jpg" width="70%" heiht="70%"></p>
+<p>上图给出了在门控逻辑中插入控制点的示例。在这个例子中，DFT控制信号为test_mode，控制点位于锁存器之前。</p>
+<h4 id="observation-point选项"><a href="#observation-point选项" class="headerlink" title="-observation_point选项"></a>-observation_point选项</h4><p>设置是否要插入观测逻辑，以便在DFT时能看到门控逻辑内部的信号。例如下面的约束命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">set_clock_gating_style   -observation_point  true</span><br></pre></td></tr></table></figure>
+<p>则设置插入观测，逻辑，如下图所示：</p>
+<p><img src="/images/digital-IC-5/14.jpg" width="70%" heiht="70%"></p>
+<p>除了上述选项外，该命令还有一些其他的选项设置，比如-setup选项设置建立时间约束。-hold选项设置保持时间约束。-observation_logic_depth选项用于设置观察电路中异或门的数目。-max_fanout选项设置一个门控单元所驱动的最大负载数目，定义CG单元最大扇出的一个目的是减少CG后面的时钟延迟，门控时钟单元的扇出越大，它到达寄存器的延迟越长；此外，还有用来约束重新平衡（后面会有对重新平衡进行介绍）。”set_clock_gating_style”命令有很多选项，我们可以在Power Compiler用”man  set_clock_gating_style”命令来查看其详细的使用方法。<br>设置了门控时钟的加入风格之后，我们就可以设置在门级网表电路中加入门控时钟。在Power Compile:里，用insert_clock_gating命令可在GTECH网表上加入门控时钟。这个命令可以单独使用，也可以配合一些选项，设置一些功能，我们下面主要介绍一下-global选项。<br>我们来看一下下面这段代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">always @ (posedge clk) begin</span><br><span class="line">  if (a &amp;&amp; b) q &lt;= d;</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+<p>当有多个模块都有这段代码时，单单利用insert_clock_gating命令就会得到下面的带门控时钟的电路：</p>
+<p><img src="/images/digital-IC-5/15.jpg" width="70%" heiht="70%"></p>
+<p>上述电路中，有两个模块都有门控时钟，都是同一个控制信号。那么我们就可以使用insert_clock_gating  -global选项，让门控时钟可以穿越层次结构，插入到设计中。这样一来，既可以省门控时钟，又可以省面积。使用该选项后，综合得到的带门控时钟的电路如下所示：</p>
+<p><img src="/images/digital-IC-5/16.jpg" width="70%" heiht="70%"></p>
+<p>因此使用insert_clock_gating加选项“-global”，可以使门控时钟穿越层次结构。如果不用选项“-global”，在每个模块里有一个门控时钟单元。<br>实现门控时钟的方法就如前面所示，主要是设置门控时钟的风格和加入门控时钟这两个命令以及他们的一些选项。</p>
+<h3 id="门控时钟的处理"><a href="#门控时钟的处理" class="headerlink" title="门控时钟的处理"></a>门控时钟的处理</h3><p>我们在门级网表中加入门控时钟之后，有时候需要对门控时钟进行修修改改，比如说删除一些门控时钟之类的。下面我们就来介绍一下常见的一些门控时钟处理。</p>
+<h4 id="重新连接门控时钟"><a href="#重新连接门控时钟" class="headerlink" title="重新连接门控时钟"></a>重新连接门控时钟</h4><p><img src="/images/digital-IC-5/17.jpg" width="70%" heiht="70%"></p>
+<p>上面的左边图中，寄存器A由CG1触发（也就是原来由上面的门控单元CG1进行控制）。由于寄存器A距离门控时钟单元CG2更接近，我们更想让寄存器A与门控单元CG2进行连接来减少连线的长度，因此我们需要进行重新连接。重新连接后，寄存器A由CG2触发，如上面右边的图所示。上面重新连接所使用的命令如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rewire_clock_gating   -gating_cell  CG2  -gated_objects  &#123;reg_A&#125;</span><br></pre></td></tr></table></figure>
+<p>此外，我们可以使用rewire_clock_gating的-proximity选项，使用这个选项后，Power Compiler会自动重新连接寄存器，使时钟门控单元CG到寄存器的连线最短：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rewire_clock_gating  -proximity</span><br></pre></td></tr></table></figure>
+<h4 id="重新平衡门控时钟的扇出"><a href="#重新平衡门控时钟的扇出" class="headerlink" title="重新平衡门控时钟的扇出"></a>重新平衡门控时钟的扇出</h4><p><img src="/images/digital-IC-5/18.jpg" width="70%" heiht="70%"></p>
+<p>左图是原来的设计。当我们对电路进行优化时（比如使用compiler_utral -retiming 或者 optimize_registers命令），设计中的寄存器可能被移动或删除，如中图所示。寄存器优化后，门控时钟的扇出不平衡。而门控时钟有最小和最大扇出的约束，对于每一个单独的CG单元（如中图所示）最小扇出的条件不能满足。Power Compiler就需要相关的命令重新平衡门控时钟的扇出，使用的命令如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rewire_clock_gating   -balance_fanout</span><br></pre></td></tr></table></figure>
+<p>使用上述命令后，Power Compiler将CG单元合并，以满足最小/最大扇出的约束。重新平衡后的设计如右图所示。</p>
+<h4 id="合并门控时钟"><a href="#合并门控时钟" class="headerlink" title="合并门控时钟"></a>合并门控时钟</h4><p>如果两个或以上的门控时钟单元的输人逻辑相等，它们可以被合并。合并只能在一个层次内部进行。合并后，冗余的逻辑被删除。如下图所示：</p>
+<p><img src="/images/digital-IC-5/19.jpg" width="70%" heiht="70%"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">merge_clock_gating_cells</span><br></pre></td></tr></table></figure>
+<h4 id="删除门控时钟"><a href="#删除门控时钟" class="headerlink" title="删除门控时钟"></a>删除门控时钟</h4><p>有时候，我们需要删除某些门控时钟，这个时候我可以使用remove_clock_gating命令。该命令即一些选项如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">remove_clock_gating </span><br><span class="line">  [-gating_cells    CG_cells_list] </span><br><span class="line">  [-gated_registers   gated_register_list] </span><br><span class="line">  [-all]  [hier]</span><br></pre></td></tr></table></figure>
+<p><img src="/images/digital-IC-5/20.jpg" width="70%" heiht="70%"></p>
+<p>上图上半部分是使用了-gated_registers这个选项，将原来的门控单元删除，换成“使能-载入”模式；上图的下半部分是使用了-gating_cells这个选项，原来的一个门控时钟删除。<br>因此我们可以通过指定门控时钟单元或通过指定寄存器删除门控时钟。如果在使用删除门控时钟命令时用了开关选项“-all”，当前设计中的所有门控时钟都会被删除。</p>
+<h4 id="手动插入门控时钟"><a href="#手动插入门控时钟" class="headerlink" title="手动插入门控时钟"></a>手动插入门控时钟</h4><p>上面介绍的是使用EDA工具，配合代码自动生成门控时钟。我们也可以以手工的方式设计门控时钟，下面是一个手动设计门控时钟的的代码例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">assign Gated_Clock  =  Clock&amp;Enable;</span><br><span class="line"></span><br><span class="line">always@(posedge Gated_Clock or negedge Reset) begin</span><br><span class="line">  if(!Reset) Data_Out&lt;=8’b0;</span><br><span class="line">  else Data_Out&lt;=Data_Out+8&apos;b1;</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+<p>对于手工门控时钟，Power Compiler将不插入时钟门控单元，也不能对它进行操作（比如重新平衡之类的）。</p>
+<p>手工门控时钟可以被取代，取代的脚本如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">create_clock   -period   5   [get_ports   clk]</span><br><span class="line">set_clock_gating_style  ...</span><br><span class="line">replace_clock   -gating_cells</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>取代前后的电路如下所示:</p>
+<p><img src="/images/digital-IC-5/21.jpg" width="70%" heiht="70%"></p>
+<p>取代手工门控时钟的好处在于:取代后，它可以避免产生潜在的毛刺(glitch)，也可以允许在它上使用其他的CG命令。例如我们可以使用remove_clock_gating命令去掉门控时钟或使用rewire_clock_gating命令重新连接门控时钟。</p>
+<p>结合综合进行RTL级的低功耗就如上所述了，重点是门控时钟的使用和操作数隔离技术，这是我们前端设计人员需要懂的。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/05/14/digital-ic-low-power-design-4/" rel="next" title="数字IC低功耗设计入门（四）— RTL级低功耗设计">
+                <i class="fa fa-chevron-left"></i> 数字IC低功耗设计入门（四）— RTL级低功耗设计
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Holmes Shen</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/shensongjian" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:shensongjian@gmail.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#五、门控时钟"><span class="nav-number">1.</span> <span class="nav-text">五、门控时钟</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#门控时钟概述"><span class="nav-number">1.1.</span> <span class="nav-text">门控时钟概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#综合库中的门控时钟模型"><span class="nav-number">1.2.</span> <span class="nav-text">综合库中的门控时钟模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#门控时钟实现"><span class="nav-number">1.3.</span> <span class="nav-text">门控时钟实现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#sequential-cell选项"><span class="nav-number">1.3.1.</span> <span class="nav-text">-sequential_cell选项</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#positive-edg-logic选项（简写为-positive或-pos）"><span class="nav-number">1.3.2.</span> <span class="nav-text">-positive_edg_logic选项（简写为-positive或-pos）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#negative-edg-logic选项（简写为-negative或-neg）"><span class="nav-number">1.3.3.</span> <span class="nav-text">-negative_edg_logic选项（简写为-negative或-neg）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#minimum-bitwidth-选项"><span class="nav-number">1.3.4.</span> <span class="nav-text">-minimum_bitwidth 选项</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#num-stages选项"><span class="nav-number">1.3.5.</span> <span class="nav-text">-num_stages选项</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#control-point与-control-signal选项"><span class="nav-number">1.3.6.</span> <span class="nav-text">-control_point与-control_signal选项</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#observation-point选项"><span class="nav-number">1.3.7.</span> <span class="nav-text">-observation_point选项</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#门控时钟的处理"><span class="nav-number">1.4.</span> <span class="nav-text">门控时钟的处理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#重新连接门控时钟"><span class="nav-number">1.4.1.</span> <span class="nav-text">重新连接门控时钟</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#重新平衡门控时钟的扇出"><span class="nav-number">1.4.2.</span> <span class="nav-text">重新平衡门控时钟的扇出</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#合并门控时钟"><span class="nav-number">1.4.3.</span> <span class="nav-text">合并门控时钟</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#删除门控时钟"><span class="nav-number">1.4.4.</span> <span class="nav-text">删除门控时钟</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#手动插入门控时钟"><span class="nav-number">1.4.5.</span> <span class="nav-text">手动插入门控时钟</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Holmes Shen</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

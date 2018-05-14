@@ -102,7 +102,9 @@
 <meta property="og:image" content="http://yoursite.com/images/digital-IC-4/10.jpg">
 <meta property="og:image" content="http://yoursite.com/images/digital-IC-4/11.jpg">
 <meta property="og:image" content="http://yoursite.com/images/digital-IC-4/12.jpg">
-<meta property="og:updated_time" content="2018-05-14T06:50:56.756Z">
+<meta property="og:image" content="http://yoursite.com/images/digital-IC-4/13.jpg">
+<meta property="og:image" content="http://yoursite.com/images/digital-IC-4/14.jpg">
+<meta property="og:updated_time" content="2018-05-14T08:35:37.141Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="数字IC低功耗设计入门（四）— RTL级低功耗设计">
 <meta name="twitter:description" content="原文链接: http://www.cnblogs.com/IClearner/p/6908033.html 前面介绍了系统级的低功耗设计，换句话说就是在系统级降低功耗可以考虑的方面。系统级的低功耗设计，主要是由系统级设计、具有丰富经验的人员实现，虽然还轮不到我们设计，我们了解一下还是比较好的。我们前端设计人员的重点不在系统级设计上面，而是在RTL级（及综合）上面。下面我们就来介绍RTL编码与逻">
@@ -411,6 +413,11 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">remove_operand_isolation  -from   &lt;starting_point&gt;   to   &lt;end_point&gt;</span><br><span class="line">compile  -inc</span><br></pre></td></tr></table></figure>
 <p>最后，提供一个完整的加入操作数隔离的示例脚本，如下所示，使用了默认的隔离逻辑类型和操作数隔离的自动恢复：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">set   do_operand_isolation   true</span><br><span class="line">read_verilog   mydesign.v</span><br><span class="line">current_design   top</span><br><span class="line">link</span><br><span class="line">create_clock -p 10 [get_ports   clk]</span><br><span class="line">set_operand_isolation_style</span><br><span class="line">set_operand_isolation   -slack 0.1</span><br><span class="line">compile</span><br><span class="line">report_operand_isolation -verb  -isolated</span><br></pre></td></tr></table></figure>
+<h2 id="四、多余翻转"><a href="#四、多余翻转" class="headerlink" title="四、多余翻转"></a>四、多余翻转</h2><p>有的时候，我们不经意间就会引入多余的翻转，多余翻转就引起的多余的功耗。下面是多余翻转的例子（类似于操作数隔离）：</p>
+<p><img src="/images/digital-IC-4/13.jpg" width="70%" heiht="70%"></p>
+<p>上图中，当load_out无效时，如果laod_op有效，那么数据就会进行操作，也就是存在相应的翻转。因为输出是无效的，所以这些翻转是多余的，消耗了功耗，但却没有输出。因此我们就要注意，当load_out无效时，load_op也要设置为无效，这样就可以节省部分功耗。<br>对于上面的多余翻转，可以进行相应的压缩来节省功耗，如下所示：</p>
+<p><img src="/images/digital-IC-4/14.jpg" width="70%" heiht="70%"></p>
+<p>sel_in同时控制了数据输入和多路选择器的输出。SEL=0时，读入A和B，选通操作1；SEL=1时，读入C和D，选通操作2；这时候就可以减少另一半操作引起的翻转，从而减少了功耗。<br>对于这种数据输入，然后进行操作选择性输出的，可以进行相应的门控来减少多余的翻转，从而减少功耗。</p>
 
       
     </div>
@@ -444,6 +451,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/05/14/digital-ic-low-power-design-5/" rel="prev" title="数字IC低功耗设计入门（五）— RTL级低功耗设计（续）">
+                数字IC低功耗设计入门（五）— RTL级低功耗设计（续） <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -520,7 +531,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -573,7 +584,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、并行与流水的选择"><span class="nav-number">1.</span> <span class="nav-text">一、并行与流水的选择</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、资源共享与状态编码"><span class="nav-number">2.</span> <span class="nav-text">二、资源共享与状态编码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、操作数隔离"><span class="nav-number">3.</span> <span class="nav-text">三、操作数隔离</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-操作数隔离的原理"><span class="nav-number">3.1.</span> <span class="nav-text">1. 操作数隔离的原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-OI的物体选择"><span class="nav-number">3.2.</span> <span class="nav-text">2. OI的物体选择</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#EDA工具自动指定操作数隔离的物体"><span class="nav-number">3.2.1.</span> <span class="nav-text">EDA工具自动指定操作数隔离的物体</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#手动指定操作数隔离的物体"><span class="nav-number">3.2.2.</span> <span class="nav-text">手动指定操作数隔离的物体</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-操作数隔离的范围"><span class="nav-number">3.3.</span> <span class="nav-text">3. 操作数隔离的范围</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-隔离逻辑的设置"><span class="nav-number">3.4.</span> <span class="nav-text">4. 隔离逻辑的设置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#默认的EDA工具选择"><span class="nav-number">3.4.1.</span> <span class="nav-text">默认的EDA工具选择</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#手动设置"><span class="nav-number">3.4.2.</span> <span class="nav-text">手动设置</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-隔离逻辑的复原"><span class="nav-number">3.5.</span> <span class="nav-text">5. 隔离逻辑的复原</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#自动复原"><span class="nav-number">3.5.1.</span> <span class="nav-text">自动复原</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#手动复原"><span class="nav-number">3.5.2.</span> <span class="nav-text">手动复原</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、并行与流水的选择"><span class="nav-number">1.</span> <span class="nav-text">一、并行与流水的选择</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、资源共享与状态编码"><span class="nav-number">2.</span> <span class="nav-text">二、资源共享与状态编码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、操作数隔离"><span class="nav-number">3.</span> <span class="nav-text">三、操作数隔离</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-操作数隔离的原理"><span class="nav-number">3.1.</span> <span class="nav-text">1. 操作数隔离的原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-OI的物体选择"><span class="nav-number">3.2.</span> <span class="nav-text">2. OI的物体选择</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#EDA工具自动指定操作数隔离的物体"><span class="nav-number">3.2.1.</span> <span class="nav-text">EDA工具自动指定操作数隔离的物体</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#手动指定操作数隔离的物体"><span class="nav-number">3.2.2.</span> <span class="nav-text">手动指定操作数隔离的物体</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-操作数隔离的范围"><span class="nav-number">3.3.</span> <span class="nav-text">3. 操作数隔离的范围</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-隔离逻辑的设置"><span class="nav-number">3.4.</span> <span class="nav-text">4. 隔离逻辑的设置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#默认的EDA工具选择"><span class="nav-number">3.4.1.</span> <span class="nav-text">默认的EDA工具选择</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#手动设置"><span class="nav-number">3.4.2.</span> <span class="nav-text">手动设置</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-隔离逻辑的复原"><span class="nav-number">3.5.</span> <span class="nav-text">5. 隔离逻辑的复原</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#自动复原"><span class="nav-number">3.5.1.</span> <span class="nav-text">自动复原</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#手动复原"><span class="nav-number">3.5.2.</span> <span class="nav-text">手动复原</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、多余翻转"><span class="nav-number">4.</span> <span class="nav-text">四、多余翻转</span></a></li></ol></div>
             
 
           </div>
