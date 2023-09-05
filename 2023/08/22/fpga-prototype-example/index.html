@@ -20,36 +20,21 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="FPGA is a powerfull hardware which can be used as ASIC prototype at the very begining of SOC projects. This document will introduce this techknowledge as following outline. Outline  FPGA Structure  LU">
+  <meta name="description" content="Prototype Example如下图所示，对于大型ASIC芯片原型验证，采用4颗VU440级联，使用高速serdes接口和线缆进行连接，在RTL层面完成多芯片的分割与互连。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="FPGA Prototype Methodolodge">
-<meta property="og:url" content="http://example.com/2023/08/22/fpga-prototype/index.html">
+<meta property="og:title" content="FPGA Prototype Example">
+<meta property="og:url" content="http://example.com/2023/08/22/fpga-prototype-example/index.html">
 <meta property="og:site_name" content="MOSS&#39; blog">
-<meta property="og:description" content="FPGA is a powerfull hardware which can be used as ASIC prototype at the very begining of SOC projects. This document will introduce this techknowledge as following outline. Outline  FPGA Structure  LU">
+<meta property="og:description" content="Prototype Example如下图所示，对于大型ASIC芯片原型验证，采用4颗VU440级联，使用高速serdes接口和线缆进行连接，在RTL层面完成多芯片的分割与互连。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/images/fpga-prototype/1.JPG">
-<meta property="og:image" content="http://example.com/images/fpga-prototype/2.JPG">
-<meta property="og:image" content="http://example.com/images/fpga-prototype/3.JPG">
-<meta property="og:image" content="http://example.com/images/fpga-prototype/4.JPG">
-<meta property="og:image" content="http://example.com/images/fpga-prototype/5.JPG">
-<meta property="og:image" content="http://example.com/images/fpga-prototype/7.JPG">
-<meta property="og:image" content="http://example.com/images/fpga-prototype/8.JPG">
-<meta property="og:image" content="http://example.com/images/fpga-prototype/9.JPG">
-<meta property="og:image" content="http://example.com/images/fpga-prototype/10.JPG">
-<meta property="og:image" content="http://example.com/images/fpga-prototype/11.JPG">
-<meta property="og:image" content="http://example.com/images/fpga-prototype/12.JPG">
-<meta property="og:image" content="http://example.com/images/fpga-prototype/13.JPG">
-<meta property="og:image" content="http://example.com/images/fpga-prototype/14.JPG">
-<meta property="og:image" content="http://example.com/images/fpga-prototype/15.JPG">
-<meta property="og:image" content="http://example.com/images/fpga-prototype/16.JPG">
 <meta property="og:image" content="http://example.com/images/fpga-prototype/image2021-9-11_12-24-12.png">
 <meta property="article:published_time" content="2023-08-22T02:03:16.377Z">
-<meta property="article:modified_time" content="2023-06-08T11:59:43.519Z">
+<meta property="article:modified_time" content="2023-09-05T12:27:50.871Z">
 <meta property="article:author" content="Moss Shen">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/images/fpga-prototype/1.JPG">
+<meta name="twitter:image" content="http://example.com/images/fpga-prototype/image2021-9-11_12-24-12.png">
 
-<link rel="canonical" href="http://example.com/2023/08/22/fpga-prototype/">
+<link rel="canonical" href="http://example.com/2023/08/22/fpga-prototype-example/">
 
 
 <script id="page-configurations">
@@ -62,7 +47,7 @@
   };
 </script>
 
-  <title>FPGA Prototype Methodolodge | MOSS' blog</title>
+  <title>FPGA Prototype Example | MOSS' blog</title>
   
 
 
@@ -167,7 +152,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2023/08/22/fpga-prototype/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/08/22/fpga-prototype-example/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -180,7 +165,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          FPGA Prototype Methodolodge
+          FPGA Prototype Example
         </h1>
 
         <div class="post-meta">
@@ -197,7 +182,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-06-08 19:59:43" itemprop="dateModified" datetime="2023-06-08T19:59:43+08:00">2023-06-08</time>
+                <time title="修改时间：2023-09-05 20:27:50" itemprop="dateModified" datetime="2023-09-05T20:27:50+08:00">2023-09-05</time>
               </span>
 
           
@@ -211,58 +196,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>FPGA is a powerfull hardware which can be used as ASIC prototype at the very begining of SOC projects. This document will introduce this techknowledge as following outline.</p>
-<h3 id="Outline"><a href="#Outline" class="headerlink" title="Outline"></a>Outline</h3><blockquote>
-<ul>
-<li>FPGA Structure<blockquote>
-<ul>
-<li>LUT, BlockRAM, DSP, IO, Clock</li>
-</ul>
-</blockquote>
-</li>
-<li>Prototype Flow<blockquote>
-<ul>
-<li>RTL modify</li>
-<li>VCS simulation</li>
-<li>Synplify synthesis</li>
-<li>Vivado implement</li>
-<li>Hardware debug</li>
-</ul>
-</blockquote>
-</li>
-<li>Prototype Example</li>
-</ul>
-</blockquote>
-<span id="more"></span>
-
-<h3 id="FPGA-Structure"><a href="#FPGA-Structure" class="headerlink" title="FPGA Structure"></a>FPGA Structure</h3><h4 id="LUT-resource"><a href="#LUT-resource" class="headerlink" title="LUT resource"></a>LUT resource</h4><img src="/images/fpga-prototype/1.JPG" width="70%" heiht="70%">
-
-<h4 id="Block-RAM-amp-Distributed-RAM"><a href="#Block-RAM-amp-Distributed-RAM" class="headerlink" title="Block RAM &amp; Distributed RAM"></a>Block RAM &amp; Distributed RAM</h4><img src="/images/fpga-prototype/2.JPG" width="70%" heiht="70%">
-
-<h4 id="DSP-slice"><a href="#DSP-slice" class="headerlink" title="DSP slice"></a>DSP slice</h4><img src="/images/fpga-prototype/3.JPG" width="70%" heiht="70%">
-
-<h4 id="IO-pad"><a href="#IO-pad" class="headerlink" title="IO pad"></a>IO pad</h4><img src="/images/fpga-prototype/4.JPG" width="70%" heiht="70%">
-
-<h4 id="Clocking-tree"><a href="#Clocking-tree" class="headerlink" title="Clocking tree"></a>Clocking tree</h4><img src="/images/fpga-prototype/5.JPG" width="70%" heiht="70%">
-
-<h3 id="FPGA-Prototype-Flow"><a href="#FPGA-Prototype-Flow" class="headerlink" title="FPGA Prototype Flow"></a>FPGA Prototype Flow</h3><h4 id="Intro"><a href="#Intro" class="headerlink" title="Intro"></a>Intro</h4><img src="/images/fpga-prototype/7.JPG" width="70%" heiht="70%">
-
-<h4 id="Basic-flow"><a href="#Basic-flow" class="headerlink" title="Basic flow"></a>Basic flow</h4><img src="/images/fpga-prototype/8.JPG" width="70%" heiht="70%">
-
-<h4 id="RTL-modify"><a href="#RTL-modify" class="headerlink" title="RTL modify"></a>RTL modify</h4><img src="/images/fpga-prototype/9.JPG" width="70%" heiht="70%">
-<img src="/images/fpga-prototype/10.JPG" width="70%" heiht="70%">
-<img src="/images/fpga-prototype/11.JPG" width="70%" heiht="70%">
-<img src="/images/fpga-prototype/12.JPG" width="70%" heiht="70%">
-
-<h4 id="Synplify-synthesis"><a href="#Synplify-synthesis" class="headerlink" title="Synplify synthesis"></a>Synplify synthesis</h4><img src="/images/fpga-prototype/13.JPG" width="70%" heiht="70%">
-
-<h4 id="Vivado-implement"><a href="#Vivado-implement" class="headerlink" title="Vivado implement"></a>Vivado implement</h4><img src="/images/fpga-prototype/14.JPG" width="70%" heiht="70%">
-<img src="/images/fpga-prototype/15.JPG" width="70%" heiht="70%">
-
-<h3 id="Hardware-debug"><a href="#Hardware-debug" class="headerlink" title="Hardware debug"></a>Hardware debug</h3><img src="/images/fpga-prototype/16.JPG" width="70%" heiht="70%">
-
-<h3 id="Prototype-Example"><a href="#Prototype-Example" class="headerlink" title="Prototype Example"></a>Prototype Example</h3><p>如下图所示，对于大型ASIC芯片原型验证，采用4颗VU440级联，使用高速serdes接口和线缆进行连接，在RTL层面完成多芯片的分割与互连。</p>
+        <h3 id="Prototype-Example"><a href="#Prototype-Example" class="headerlink" title="Prototype Example"></a>Prototype Example</h3><p>如下图所示，对于大型ASIC芯片原型验证，采用4颗VU440级联，使用高速serdes接口和线缆进行连接，在RTL层面完成多芯片的分割与互连。</p>
 <img src="/images/fpga-prototype/image2021-9-11_12-24-12.png" width="70%" heiht="70%">
+
+<span id="more"></span>
 
 <h4 id="lt-lt-–-RTL-modify-–-gt-gt"><a href="#lt-lt-–-RTL-modify-–-gt-gt" class="headerlink" title="&lt;&lt;– RTL modify –&gt;&gt;"></a>&lt;&lt;– RTL modify –&gt;&gt;</h4><p>1，时钟树上的mux，调用common 目录下的 clock_mux.v。在clock_mux.v中统一定义 XILIXN_FPGA 宏，调用BUFGMUX原语。<br>2，非时钟树上的mux，调用common目录下的func_mux.v。<br>3，如果定义了”XXX_TOP_DUMMY” 或者 “XXX_OFF”宏，需要在宏里面将所有的output信号tie 0&#x2F;1，不能悬空。<br>4，所有asic memory的调用，遵从命名格式，由脚本会统一生成fpga所需要的memory。<br>5，所有analog model的调用，添加 “XILINX_FPGA” 宏，并在宏里面完成可综合的rtl逻辑。<br>6，PIN SHARE相关代码添加 “NON_PIN_SHARE” 宏的相关去除逻辑。<br>7，按照fpga分割要求，创建top_f1.v，top_f2.v， top_f3.v，top_f4.v，创建serdes互连相关文件，加入aurora_64b66b仿真文件列表。  </p>
 <h4 id="lt-lt-–-VCS-simulation-–-gt-gt"><a href="#lt-lt-–-VCS-simulation-–-gt-gt" class="headerlink" title="&lt;&lt;– VCS simulation –&gt;&gt;"></a>&lt;&lt;– VCS simulation –&gt;&gt;</h4><p>1，修改rtl_fpga.f，去除stdcell_tsmc.f，io_model.f，mem_model_ip.f，design_ware.f，ddr_rtl.f。<br>2，添加fpga ddr 仿真model，fpga仿真model，模拟ip仿真model，vivado clock wizard仿真model。<br>3，添加xilinx标准库。<br>4，编译cpu firmware，关闭firmware中ddr_init相关代码，将bl1.bin转换成code.hex，初始化进fpga rom仿真model中。<br>5，修改tb.sv，添加uart的真实rx，初始化PTCM, DTCM。<br>6，在tb.sv中例化top_f1, top_f2, top_f3, top_f4，例化serdes接口进行连接，注意按照fpga的实际连接方式，serdes连接要有反向映射关系。<br>7，对IP生成的模型，执行convert脚本生成ddr初始化相关hex文件，初始化进ddr model中。<br>8，make com编译，make elab生成work库，make sim仿真。  </p>
@@ -283,13 +220,10 @@
 
         
     <div class="post-nav">
+      <div class="post-nav-item"></div>
       <div class="post-nav-item">
-    <a href="/2023/08/22/fpga-verification-system/" rel="prev" title="FPGA Verification System">
-      <i class="fa fa-chevron-left"></i> FPGA Verification System
-    </a></div>
-      <div class="post-nav-item">
-    <a href="/2023/09/05/dv-uvm-testplan/" rel="next" title="Verification Testplan Template">
-      Verification Testplan Template <i class="fa fa-chevron-right"></i>
+    <a href="/2023/08/22/hexo-setup/" rel="next" title="HEXO Setup">
+      HEXO Setup <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -349,7 +283,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Outline"><span class="nav-number">1.</span> <span class="nav-text">Outline</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FPGA-Structure"><span class="nav-number">2.</span> <span class="nav-text">FPGA Structure</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#LUT-resource"><span class="nav-number">2.1.</span> <span class="nav-text">LUT resource</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Block-RAM-amp-Distributed-RAM"><span class="nav-number">2.2.</span> <span class="nav-text">Block RAM &amp; Distributed RAM</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#DSP-slice"><span class="nav-number">2.3.</span> <span class="nav-text">DSP slice</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#IO-pad"><span class="nav-number">2.4.</span> <span class="nav-text">IO pad</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Clocking-tree"><span class="nav-number">2.5.</span> <span class="nav-text">Clocking tree</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FPGA-Prototype-Flow"><span class="nav-number">3.</span> <span class="nav-text">FPGA Prototype Flow</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Intro"><span class="nav-number">3.1.</span> <span class="nav-text">Intro</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Basic-flow"><span class="nav-number">3.2.</span> <span class="nav-text">Basic flow</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RTL-modify"><span class="nav-number">3.3.</span> <span class="nav-text">RTL modify</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Synplify-synthesis"><span class="nav-number">3.4.</span> <span class="nav-text">Synplify synthesis</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Vivado-implement"><span class="nav-number">3.5.</span> <span class="nav-text">Vivado implement</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Hardware-debug"><span class="nav-number">4.</span> <span class="nav-text">Hardware debug</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Prototype-Example"><span class="nav-number">5.</span> <span class="nav-text">Prototype Example</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#lt-lt-%E2%80%93-RTL-modify-%E2%80%93-gt-gt"><span class="nav-number">5.1.</span> <span class="nav-text">&lt;&lt;– RTL modify –&gt;&gt;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#lt-lt-%E2%80%93-VCS-simulation-%E2%80%93-gt-gt"><span class="nav-number">5.2.</span> <span class="nav-text">&lt;&lt;– VCS simulation –&gt;&gt;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#lt-lt-%E2%80%93-Synplify-synthesis-%E2%80%93-gt-gt"><span class="nav-number">5.3.</span> <span class="nav-text">&lt;&lt;– Synplify synthesis –&gt;&gt;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#lt-lt-%E2%80%93-Vivado-implement-%E2%80%93-gt-gt"><span class="nav-number">5.4.</span> <span class="nav-text">&lt;&lt;– Vivado implement –&gt;&gt;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#lt-lt-%E2%80%93-Hardware-debug-%E2%80%93-gt-gt"><span class="nav-number">5.5.</span> <span class="nav-text">&lt;&lt;– Hardware debug –&gt;&gt;</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Prototype-Example"><span class="nav-number">1.</span> <span class="nav-text">Prototype Example</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#lt-lt-%E2%80%93-RTL-modify-%E2%80%93-gt-gt"><span class="nav-number">1.1.</span> <span class="nav-text">&lt;&lt;– RTL modify –&gt;&gt;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#lt-lt-%E2%80%93-VCS-simulation-%E2%80%93-gt-gt"><span class="nav-number">1.2.</span> <span class="nav-text">&lt;&lt;– VCS simulation –&gt;&gt;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#lt-lt-%E2%80%93-Synplify-synthesis-%E2%80%93-gt-gt"><span class="nav-number">1.3.</span> <span class="nav-text">&lt;&lt;– Synplify synthesis –&gt;&gt;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#lt-lt-%E2%80%93-Vivado-implement-%E2%80%93-gt-gt"><span class="nav-number">1.4.</span> <span class="nav-text">&lt;&lt;– Vivado implement –&gt;&gt;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#lt-lt-%E2%80%93-Hardware-debug-%E2%80%93-gt-gt"><span class="nav-number">1.5.</span> <span class="nav-text">&lt;&lt;– Hardware debug –&gt;&gt;</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
