@@ -20,18 +20,18 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="1 自动化UVM验证框架简介基于Google的OpenTitan框架搭建自动化UVM验证平台，具备从IP级到子系统级，NOC总线级和SOC系统级的验证垂直复用功能。它包括四个基本组件：dv_lib，env_tool，reg_tool和sim_tool。其中dv_lib是一套基于UVM框架的basic结构和通用函数集合；env_tool是基于python语言的验证平台生成器，可以生成uvm验证框架">
+  <meta name="description" content="1 自动化验证平台简介基于Google的OpenTitan框架搭建自动化UVM验证平台，具备从IP级到子系统级，NOC总线级和SOC系统级的验证垂直复用功能。它包括四个基本组件：dv_lib，env_tool，reg_tool和sim_tool。其中dv_lib是一套基于UVM框架的basic结构和通用函数集合；env_tool是基于python语言的验证平台生成器，可以生成uvm验证框架的大部">
 <meta property="og:type" content="article">
 <meta property="og:title" content="自动化UVM验证平台">
 <meta property="og:url" content="http://example.com/2023/09/06/dv-uvm-pioneer1/index.html">
 <meta property="og:site_name" content="MOSS&#39; blog">
-<meta property="og:description" content="1 自动化UVM验证框架简介基于Google的OpenTitan框架搭建自动化UVM验证平台，具备从IP级到子系统级，NOC总线级和SOC系统级的验证垂直复用功能。它包括四个基本组件：dv_lib，env_tool，reg_tool和sim_tool。其中dv_lib是一套基于UVM框架的basic结构和通用函数集合；env_tool是基于python语言的验证平台生成器，可以生成uvm验证框架">
+<meta property="og:description" content="1 自动化验证平台简介基于Google的OpenTitan框架搭建自动化UVM验证平台，具备从IP级到子系统级，NOC总线级和SOC系统级的验证垂直复用功能。它包括四个基本组件：dv_lib，env_tool，reg_tool和sim_tool。其中dv_lib是一套基于UVM框架的basic结构和通用函数集合；env_tool是基于python语言的验证平台生成器，可以生成uvm验证框架的大部">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/images/dv-uvm-pioneer1/1.jpg">
 <meta property="og:image" content="http://example.com/images/dv-uvm-pioneer1/2.jpg">
 <meta property="og:image" content="http://example.com/images/dv-uvm-pioneer1/3.jpg">
 <meta property="article:published_time" content="2023-09-06T04:24:53.471Z">
-<meta property="article:modified_time" content="2023-09-06T04:22:40.434Z">
+<meta property="article:modified_time" content="2023-09-06T05:52:26.394Z">
 <meta property="article:author" content="Moss Shen">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://example.com/images/dv-uvm-pioneer1/1.jpg">
@@ -178,7 +178,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2023-09-06 12:24:53 / 修改时间：12:22:40" itemprop="dateCreated datePublished" datetime="2023-09-06T12:24:53+08:00">2023-09-06</time>
+              <time title="创建时间：2023-09-06 12:24:53 / 修改时间：13:52:26" itemprop="dateCreated datePublished" datetime="2023-09-06T12:24:53+08:00">2023-09-06</time>
             </span>
 
           
@@ -193,8 +193,8 @@
 
       
         <hr>
-<h3 id="1-自动化UVM验证框架简介"><a href="#1-自动化UVM验证框架简介" class="headerlink" title="1 自动化UVM验证框架简介"></a>1 自动化UVM验证框架简介</h3><p>基于Google的OpenTitan框架搭建自动化UVM验证平台，具备从IP级到子系统级，NOC总线级和SOC系统级的验证垂直复用功能。它包括四个基本组件：dv_lib，env_tool，reg_tool和sim_tool。其中dv_lib是一套基于UVM框架的basic结构和通用函数集合；env_tool是基于python语言的验证平台生成器，可以生成uvm验证框架的大部分内容，同时还可以生成具有统一结构的agent模板；reg_tool是基于python语言的自动化寄存器模型测试平台，可以根据寄存器列表excel文件生成uvm register model验证相关的类和函数；sim_tool是基于pyton语言的仿真调度平台，可以支持多种模式的仿真和日志文件分析，同时支持多线程并发操作。</p>
-<img src="/images/dv-uvm-pioneer1/1.jpg" width="100%" heiht="100%">
+<h3 id="1-自动化验证平台简介"><a href="#1-自动化验证平台简介" class="headerlink" title="1 自动化验证平台简介"></a>1 自动化验证平台简介</h3><p>基于Google的OpenTitan框架搭建自动化UVM验证平台，具备从IP级到子系统级，NOC总线级和SOC系统级的验证垂直复用功能。它包括四个基本组件：dv_lib，env_tool，reg_tool和sim_tool。其中dv_lib是一套基于UVM框架的basic结构和通用函数集合；env_tool是基于python语言的验证平台生成器，可以生成uvm验证框架的大部分内容，同时还可以生成具有统一结构的agent模板；reg_tool是基于python语言的自动化寄存器模型测试平台，可以根据寄存器列表excel文件生成uvm register model验证相关的类和函数；sim_tool是基于pyton语言的仿真调度平台，可以支持多种模式的仿真和日志文件分析，同时支持多线程并发操作。</p>
+<img src="/images/dv-uvm-pioneer1/1.jpg" width="50%" heiht="50%">
 
 <blockquote>
 <p>common_lib：包含通用的库文件，目前集成的有dv_lib, amba_vip, assert_lib。同时，验证项目公用的agent也放在此目录下。</p>
@@ -380,11 +380,11 @@
 <p>寄存器Debug文件生成。</p>
 </blockquote>
 <h4 id="4-1-设计思想"><a href="#4-1-设计思想" class="headerlink" title="4.1 设计思想"></a>4.1 设计思想</h4><p>Reg_Tool使用了面向对象编程OOP（Object Oriented Programming）的思想，把每个子功能视作一个对象，每个对象可以拥有各自的数据和处理方法，同时可以通过句柄索引其他对象实例的内容。<br>众多分离式子功能脚本共同使用到的寄存器变量和方法(Methods) 被放入到一个公共类中，方便统一调用。<br>如下图所示（link）：通过在公共类建立统一的工作流程（Work Procedures），将所有子功能的步骤均包含在这个流程中,从而公共类每个步骤运行时都会调用所有子功能对象内部相应函数，从而协调所有子功能完成各自的工作。</p>
-<img src="/images/dv-uvm-pioneer1/2.jpg" width="100%" heiht="100%">
+<img src="/images/dv-uvm-pioneer1/2.jpg" width="50%" heiht="50%">
 
 
 <h4 id="4-2-运行方式"><a href="#4-2-运行方式" class="headerlink" title="4.2 运行方式"></a>4.2 运行方式</h4><ul>
-<li>准备好<code>$&#123;module_name&#125;_boot_config.py</code>文件，并放入<code>&#123;reg_tool_path&#125;/code_gen_lib/boot_config</code> 文件夹中</li>
+<li>准备好<code>$&#123;module_name&#125;_boot_config.py</code>文件，<br>并放入<code>&#123;reg_tool_path&#125;/code_gen_lib/boot_config</code> 文件夹中</li>
 <li>python3.x环境</li>
 <li>专用于excel读取的python第三方库：xlrd 1.1.0。已经集成在Reg_Tool中。</li>
 <li>单独运行，包含3个参数，分别是：寄存器列表名称，模块名，寄存器列表sheet_name</li>
@@ -400,7 +400,7 @@
 <li>框架可扩展性高，后续增加新功能不需要修改基本框架。</li>
 </ul>
 <h4 id="5-2-使用方法"><a href="#5-2-使用方法" class="headerlink" title="5.2 使用方法"></a>5.2 使用方法</h4><p>目前支持的参数有：</p>
-<img src="/images/dv-uvm-pioneer1/3.jpg" width="100%" heiht="100%">
+<img src="/images/dv-uvm-pioneer1/3.jpg" width="50%" heiht="50%">
 
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">- help：打印帮助信息</span><br><span class="line">- coverage：添加收集覆盖率选项(-cm line+cond+fsm+branch+assert +optconfigfile $covCfgFile -cm_hier $covHierFile -cm_dir $covDirFile)</span><br><span class="line">    - line：使能line coverage；</span><br><span class="line">    - cond：使能cond coverage；</span><br><span class="line">    - tgl：使能toggle coverage；</span><br><span class="line">    - fsm：使能FSM coverage；</span><br><span class="line">    - branch：使能branch coverage；</span><br><span class="line">    - assert：使能assert coverage；</span><br><span class="line">    - optconfigfile：配置文件允许启用或者禁用某些对设计对象的优化，例如自动避免生成auto cross bin等；</span><br><span class="line">    - cm_hier：指定覆盖率的hierarchy；</span><br><span class="line">    - cm_dir：指定coverage生成文件的存放目录；</span><br><span class="line">- yaml：测试使用的yaml文件，可使用相对路径或者绝对路径</span><br><span class="line">- random_dist：生成随机分布报告，可以选择传参，参数为随机分布文件前缀，不传参默认输入的随机分布文件为random_dist_\d+.cfg</span><br><span class="line">- list：列出yaml文件里面所有的测试case</span><br><span class="line">- regression：指定本次测试为回归测试，将测试yaml文件里面所有case</span><br><span class="line">- test：必须传入一个参数，此参数为指定测试的case（case必须是yaml 文件里面的case）</span><br><span class="line">- compile：强制重新编译。此选项将清空编译文件夹，重新编译</span><br><span class="line">- run：运行regression 选项的case或者test选项指定的case</span><br><span class="line">- dumpoff：关闭波形输出。regression模式默认关闭波形，single模式默认开启波形。</span><br><span class="line">- cmodelgen：调用当前目录下的gen_so.sh脚本，生成验证需要的cmodel相关的文件。用户需要在gen_so.sh使用shell命令实现进入cmodel文件夹，cmodel 编译，拷贝等操作</span><br><span class="line">- reggen：调用当前目录下的gen_reg.sh脚本，生成验证需要的寄存器模型相关的文件。用户需要在gen_reg.sh指定生成寄存器模型的excel 和ip，以及拷贝生成文件等操作。</span><br><span class="line">- clean：调用当前目录下的clean.sh脚本，清理掉用户不需要的文件。用户可以在clean.sh里指定具体的clean操作。</span><br><span class="line">- uvm_debug：UVM调试选项。添加此选项会打开verdi，进入UVM交互界面，用户可用来调试运行验证代码。具体参数如下：</span><br><span class="line">    （+ntb_binary_debug_solver_cpu_limit=20 +ntb_linear_debug_solver_cpu_limit=20 -gui=verdi +UVM_VERDI_TRACE=UVM_AWARE+HIER）</span><br><span class="line">- max_process：regression使用，指定最大并行运行的case数。默认为10。最大支持64。</span><br><span class="line">- round：指定yaml文件内case运行次数，默认是1。如果传参-round 5，所有yaml文件的case会全部运行5次。</span><br><span class="line">- seed：指定验证的随机种子。如果不指定，默认使用0~100000000内随机数。</span><br></pre></td></tr></table></figure>
 
@@ -445,6 +445,11 @@
 </ul>
 <p><em>修改 <code>jiraUserInfo.json</code> 文件指定jira server地址，jira用户名，登陆密码等信息。<code>-jira</code> 选项可自动提交bug至jira系统</em></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">./dvsim.py -yaml ../yaml/eis_test.yaml -regress -comp -run -reggen -cmodelgen -jira</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
 
 
 
@@ -525,7 +530,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E8%87%AA%E5%8A%A8%E5%8C%96UVM%E9%AA%8C%E8%AF%81%E6%A1%86%E6%9E%B6%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">1 自动化UVM验证框架简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Common-Lib"><span class="nav-number">2.</span> <span class="nav-text">2 Common_Lib</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-Common-agent"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 Common_agent</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-Common-if"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 Common_if</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-DV-Util%E5%8A%9F%E8%83%BD"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 DV_Util功能</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-DV-Lib%E7%BB%93%E6%9E%84"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 DV_Lib结构</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Env-Tool"><span class="nav-number">3.</span> <span class="nav-text">3 Env_Tool</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-%E8%AE%BE%E8%AE%A1%E6%80%9D%E6%83%B3"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 设计思想</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 实现方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 使用方法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-Reg-Tool"><span class="nav-number">4.</span> <span class="nav-text">4 Reg_Tool</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-%E8%AE%BE%E8%AE%A1%E6%80%9D%E6%83%B3"><span class="nav-number">4.1.</span> <span class="nav-text">4.1 设计思想</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-%E8%BF%90%E8%A1%8C%E6%96%B9%E5%BC%8F"><span class="nav-number">4.2.</span> <span class="nav-text">4.2 运行方式</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-Sim-Tool"><span class="nav-number">5.</span> <span class="nav-text">5 Sim_Tool</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#5-1-%E8%AE%BE%E8%AE%A1%E6%80%9D%E6%83%B3"><span class="nav-number">5.1.</span> <span class="nav-text">5.1 设计思想</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-2-%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95"><span class="nav-number">5.2.</span> <span class="nav-text">5.2 使用方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-3-%E6%B5%8B%E8%AF%95%E4%B8%8E%E5%9B%9E%E5%BD%92"><span class="nav-number">5.3.</span> <span class="nav-text">5.3 测试与回归</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E8%87%AA%E5%8A%A8%E5%8C%96%E9%AA%8C%E8%AF%81%E5%B9%B3%E5%8F%B0%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">1 自动化验证平台简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Common-Lib"><span class="nav-number">2.</span> <span class="nav-text">2 Common_Lib</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-Common-agent"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 Common_agent</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-Common-if"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 Common_if</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-DV-Util%E5%8A%9F%E8%83%BD"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 DV_Util功能</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-DV-Lib%E7%BB%93%E6%9E%84"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 DV_Lib结构</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Env-Tool"><span class="nav-number">3.</span> <span class="nav-text">3 Env_Tool</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-%E8%AE%BE%E8%AE%A1%E6%80%9D%E6%83%B3"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 设计思想</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 实现方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 使用方法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-Reg-Tool"><span class="nav-number">4.</span> <span class="nav-text">4 Reg_Tool</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-%E8%AE%BE%E8%AE%A1%E6%80%9D%E6%83%B3"><span class="nav-number">4.1.</span> <span class="nav-text">4.1 设计思想</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-%E8%BF%90%E8%A1%8C%E6%96%B9%E5%BC%8F"><span class="nav-number">4.2.</span> <span class="nav-text">4.2 运行方式</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-Sim-Tool"><span class="nav-number">5.</span> <span class="nav-text">5 Sim_Tool</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#5-1-%E8%AE%BE%E8%AE%A1%E6%80%9D%E6%83%B3"><span class="nav-number">5.1.</span> <span class="nav-text">5.1 设计思想</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-2-%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95"><span class="nav-number">5.2.</span> <span class="nav-text">5.2 使用方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-3-%E6%B5%8B%E8%AF%95%E4%B8%8E%E5%9B%9E%E5%BD%92"><span class="nav-number">5.3.</span> <span class="nav-text">5.3 测试与回归</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
