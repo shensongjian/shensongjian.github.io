@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","Muse | Mist":320,"display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="1 自动化验证平台简介基于Google的OpenTitan框架搭建自动化UVM验证平台，具备从IP级到子系统级，NOC总线级和SOC系统级的验证垂直复用功能。它包括四个基本组件：dv_lib，env_tool，reg_tool和sim_tool。其中dv_lib是一套基于UVM框架的basic结构和通用函数集合；env_tool是基于python语言的验证平台生成器，可以生成uvm验证框架的大部">
+<meta property="og:type" content="article">
+<meta property="og:title" content="自动化UVM验证平台">
+<meta property="og:url" content="http://example.com/2023/09/06/dv-uvm-pioneer1/index.html">
+<meta property="og:site_name" content="MOSS&#39; blog">
+<meta property="og:description" content="1 自动化验证平台简介基于Google的OpenTitan框架搭建自动化UVM验证平台，具备从IP级到子系统级，NOC总线级和SOC系统级的验证垂直复用功能。它包括四个基本组件：dv_lib，env_tool，reg_tool和sim_tool。其中dv_lib是一套基于UVM框架的basic结构和通用函数集合；env_tool是基于python语言的验证平台生成器，可以生成uvm验证框架的大部">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/dv-uvm-pioneer1/1.jpg">
+<meta property="og:image" content="http://example.com/images/dv-uvm-pioneer1/2.jpg">
+<meta property="og:image" content="http://example.com/images/dv-uvm-pioneer1/3.jpg">
+<meta property="article:published_time" content="2023-09-06T04:24:53.471Z">
+<meta property="article:modified_time" content="2023-09-06T05:55:57.434Z">
+<meta property="article:author" content="Moss Shen">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/dv-uvm-pioneer1/1.jpg">
+
+<link rel="canonical" href="http://example.com/2023/09/06/dv-uvm-pioneer1/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>自动化UVM验证平台 | MOSS' blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">MOSS' blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/09/06/dv-uvm-pioneer1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Moss Shen">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MOSS' blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          自动化UVM验证平台
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2023-09-06 12:24:53 / 修改时间：13:55:57" itemprop="dateCreated datePublished" datetime="2023-09-06T12:24:53+08:00">2023-09-06</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <hr>
+<h3 id="1-自动化验证平台简介"><a href="#1-自动化验证平台简介" class="headerlink" title="1 自动化验证平台简介"></a>1 自动化验证平台简介</h3><p>基于Google的OpenTitan框架搭建自动化UVM验证平台，具备从IP级到子系统级，NOC总线级和SOC系统级的验证垂直复用功能。它包括四个基本组件：dv_lib，env_tool，reg_tool和sim_tool。其中dv_lib是一套基于UVM框架的basic结构和通用函数集合；env_tool是基于python语言的验证平台生成器，可以生成uvm验证框架的大部分内容，同时还可以生成具有统一结构的agent模板；reg_tool是基于python语言的自动化寄存器模型测试平台，可以根据寄存器列表excel文件生成uvm register model验证相关的类和函数；sim_tool是基于pyton语言的仿真调度平台，可以支持多种模式的仿真和日志文件分析，同时支持多线程并发操作。</p>
+<img src="/images/dv-uvm-pioneer1/1.jpg" width="70%" heiht="70%">
+
+<blockquote>
+<p>common_lib：包含通用的库文件，目前集成的有dv_lib, amba_vip, assert_lib。同时，验证项目公用的agent也放在此目录下。</p>
+</blockquote>
+<blockquote>
+<p>common_script：包含基于python的reg_tool, env_tool和sim_tool。</p>
+</blockquote>
+<blockquote>
+<p>common_dpi：包含公用的reference model，一般都是基于C或C++语言开发。</p>
+</blockquote>
+<blockquote>
+<p>ip_env：包含所有的IP验证环境，且各个IP的验证环境具有相同的结构。</p>
+</blockquote>
+<blockquote>
+<p>sub_sys_env：多个IP环境集成复用成一个子系统验证环境，在IP验证环境中的agent会自动配置成passive模式，只做monitor侦听和scorboard比对。</p>
+</blockquote>
+<blockquote>
+<p>soc_env：包含NOC总线验证环境和SOC验证环境。其中NOC验证环境会将总线上所有的amba master替换为amba vip，用来全面覆盖总线的功能和评估总线的性能；SOC验证环境会集成sub_sys_env和CPU，在芯片级做寄存器测试和上下电测试。</p>
+</blockquote>
+<span id="more"></span>
+
+<hr>
+<h3 id="2-Common-Lib"><a href="#2-Common-Lib" class="headerlink" title="2 Common_Lib"></a>2 Common_Lib</h3><p>Common_Lib 是整个环境的公共库，包含common_agent,common_if,dv_lib和dv_util。</p>
+<h4 id="2-1-Common-agent"><a href="#2-1-Common-agent" class="headerlink" title="2.1 Common_agent"></a>2.1 Common_agent</h4><p>所有项目需要用到的公共agent都放在这个文件夹下，该文件夹下的agent都需要使用env_tool下的脚本生成的模板来完善，这样在使用env_tool下的脚本生成验证环境的时候只需要指定agent的名称数量和模式就可以直接将agent集成到验证环境中</p>
+<h4 id="2-2-Common-if"><a href="#2-2-Common-if" class="headerlink" title="2.2 Common_if"></a>2.2 Common_if</h4><p>环境中所有的时钟复位信号我们都通过clk_rst_if来产生。函数介绍：</p>
+<blockquote>
+<p>set_freq_khz(int freq_khz):用于设置时钟频率，单位是khz，输入需要是整数。在uvm的环境中，一般是在basetest中调用此函数来配置时钟频率</p>
+</blockquote>
+<blockquote>
+<p>set_freq_mhz(int freq_khz):用于设置时钟频率，单位是mhz，输入需要是整数。在uvm的环境中，一般是在basetest中调用此函数来配置时钟频率</p>
+</blockquote>
+<blockquote>
+<p>set_active(), 用于设置驱动时钟和复位信号的选择器，如果不调用这个函数，虽然interface内部会产生时钟信号，但是interface输出的是高阻态</p>
+</blockquote>
+<blockquote>
+<p>set_period_ps(int period_ps):用于设置时钟周期，单位是ps，输入需要是整数。在uvm的环境中，一般是在basetest中调用此函数来配置时钟频率</p>
+</blockquote>
+<blockquote>
+<p>set_duty_cycle(int duty):用于设置时钟占空比，输入需要是整数(1-99)。在uvm的环境中，一般是在basetest中调用此函数来配置时钟占空比，默认值是50</p>
+</blockquote>
+<blockquote>
+<p>apply_reset(), 用于产生reset信号，task默认参数调用用会产生异步复位，同步释放，复位信号持续时钟周期在50-100个cycle，该task在base_test的reset_phase中调用最终的时钟产生逻辑在最后的一个initial块中的forever循环中，通过延时和翻转时钟信号产生。</p>
+</blockquote>
+<h4 id="2-3-DV-Util功能"><a href="#2-3-DV-Util功能" class="headerlink" title="2.3 DV_Util功能"></a>2.3 DV_Util功能</h4><blockquote>
+<p>dv_macros.svh：验证环境中所有公共的宏定义都放在这个文件中，常用宏定义：</p>
+</blockquote>
+<blockquote>
+<ul>
+<li>get_clp_value_tmp(name) 用于配合yaml从命令行上解析参数，需要配合寄存器脚本一起使用。一般不手动增加</li>
+<li>get_clp_value(name) 用于给变量name从命令行上取值，类型是int型</li>
+<li>get_clp_string(name) 用于给变量name从命令行上取值，类型是string</li>
+<li>downcast(ext, base, msg) 用于cast，并报fatal消息</li>
+<li>DV_CHECK_RANDOMIZE_WITH_FATAL(var,constraint)</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>dv_test_status_pkg.svh：case最终状态打印的库，pass和fail</p>
+</blockquote>
+<blockquote>
+<p>dv_report_server.sv：uvm_default_report_server的子类，增加了命令行控制uvm打印的格式，命令行传递show_file_line，show_file_path等可以控制打印格式</p>
+</blockquote>
+<blockquote>
+<p>dv_utils_pkg.f：dv_utils的filelist，方便编译时添加</p>
+</blockquote>
+<blockquote>
+<p>dv_utils_pkg.sv：公共的函数，类型，枚举变量</p>
+</blockquote>
+<blockquote>
+<ul>
+<li>if_mode_e: master slave</li>
+<li>clk_freq_mhz_e: ClkFreq24Mhz,…</li>
+<li>set_max_quit_count(int n) 设置多少个error退出仿真</li>
+<li>common_func_pool::gen_golden 从文件中产生golden数据</li>
+<li>common_func_pool::do_compare 做数据对比</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>str_utils_pkg.sv：字符串处理的函数，包括字符串查找，字符串截取，字符串替换等等</p>
+</blockquote>
+<blockquote>
+<ul>
+<li>str_has_sub_str(s,sub) 判断s中是否有sub</li>
+<li>str_find(s,sub) 返回sub在s中的第一个index，找不到返回-1</li>
+<li>str_rfind(s,sub) 返回sub在s中的最后一个index，找不到返回-1</li>
+<li>str_replace(s,sub，new_sub) 替换s中第一个sub为new_sub</li>
+<li>str_split(s,res[$],delim) 把s以分隔符delim分成多个字符串放入res中</li>
+<li>str_join(s[$], delim) 以delim作为分隔符把s中的所有字符串拼接</li>
+</ul>
+</blockquote>
+<h4 id="2-4-DV-Lib结构"><a href="#2-4-DV-Lib结构" class="headerlink" title="2.4 DV_Lib结构"></a>2.4 DV_Lib结构</h4><blockquote>
+<p>dv_base_agent: 所有agent内部组件的例化连接</p>
+</blockquote>
+<blockquote>
+<p>dv_base_agent_cfg: agent的配置文件 is_active和if_mode来控制agent的模式；</p>
+<ul>
+<li>is_active&#x3D;0：agent作为monitor，只用于采样数据</li>
+<li>is_active&#x3D;1，is_mode&#x3D;master：agent作为master模式，用于发送数据给DUT</li>
+<li>is_active&#x3D;1，is_mode&#x3D;slave：agent作为slave模式，用于和DUT有数据交互的接口</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>dv_base_driver: main_phase中fork了两个进程reset_signals和get_and_drive。子类实现时需要重写这两个函数，用来复位和驱动</p>
+</blockquote>
+<blockquote>
+<p>dv_base_monitor：子类需要重写collect_trans和watchdog_ok_to_end两个函数，collec_trans的主要作用是从接口上monitor数据，watch_dog_ok_to_end是agent的watchdog，用于监测agent接口上数据，从而判断agent是否在工作。这里给变量ok_to_end赋值为1，表示agent空闲，ok_to_end为0，表示agent在工作。同时需要调整cfg中的ok_to_end_delay_ns，这个变量的含义是，当ok_to_end等于1时，并且持续ok_to_end_delay_ns这么多ns的时间后ok_to_end仍然是1，才会drop_objection</p>
+</blockquote>
+<blockquote>
+<p>dv_base_sequencer：mon2sqr_port，req_port和rsp_port的例化（后面两个port很少用到）</p>
+</blockquote>
+<blockquote>
+<p>dv_base_env：所有组件的例化，从basetest中接受env_cfg，从top_tb中接收所有的时钟复位接口，并放入env_cfg的clk_rst_vifs关联数组中。同时根据base_test中的时钟配置配置所有时钟接口的时钟频率 </p>
+</blockquote>
+<blockquote>
+<p>dv_base_env_cfg：</p>
+<ul>
+<li>各种环境配置和lantency配置</li>
+<li>寄存器模型的句柄ral</li>
+<li>clk_rst_vif_names[$] 时钟复位接口名字的队列</li>
+<li>clk_rst_vifs[string] 关联数组，保存所有的时钟复位接口</li>
+<li>clk_freqs_mhz[string] 关联数组，保存所有接口的时钟频率（MHz）</li>
+<li>clk_freqs_khz[string] 关联数组，保存所有接口的时钟频率（KHz）</li>
+<li>clk_period_ps[string] 关联数组，保存所有接口的时钟周期（ps）</li>
+<li>其他的函数基本都是用不到的</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>dv_base_ref_model：只有一个build_phase中判断cfg不为null的逻辑</p>
+</blockquote>
+<blockquote>
+<p>dv_base_scoreboard：增加了如果出现uvm_fatal仍然会运行scoreboard的check_phase的逻辑</p>
+</blockquote>
+<blockquote>
+<p>dv_base_virtual_sequencer：reset_phase中增加了stop_sequence的调用，防止phase跳转后出现错误</p>
+</blockquote>
+<blockquote>
+<p>dv_base_test：env和cfg的创建，cfg中部分参数从命令行获取，end_of_elaboration_phase中通过命令行设置max_quit_count和超时时间。final_phase中打印case的最终仿真结果</p>
+</blockquote>
+<blockquote>
+<p>dv_base_pkg：将所有的dv_base类打包到dv_base_pkg中</p>
+</blockquote>
+<hr>
+<h3 id="3-Env-Tool"><a href="#3-Env-Tool" class="headerlink" title="3 Env_Tool"></a>3 Env_Tool</h3><p>Env_tool的主要功能有生成agent代码，ip_env环境代码，sub_sys_env环境代码以及soc_env环境代码</p>
+<h4 id="3-1-设计思想"><a href="#3-1-设计思想" class="headerlink" title="3.1 设计思想"></a>3.1 设计思想</h4><ul>
+<li>脚本共用思想：将脚本中一些非公共部分以配置的形式放在sim目录下，使得所有环境都可以使用相同的dvsim.pl脚本来调度。</li>
+<li>Agent自动集成思想：Agent具有统一的命名规则，在环境中统一例化agent的名称、数量和工作模式，同时自动添加fifo，以连接到reference model和scoreboard。</li>
+<li>Filelist自动生成：自动生成各个部分的pkg和filelist，方便组织系统文件。</li>
+<li>Packeget自动导入：在各个xxx.pkg和top_tb.sv中根据需要自动导入其他class的包。</li>
+<li>环境复用思想：在soc env中可自动化集成ip或者sub_sys的环境，实现底层环境在上层的垂直复用。</li>
+</ul>
+<h4 id="3-2-实现方式"><a href="#3-2-实现方式" class="headerlink" title="3.2 实现方式"></a>3.2 实现方式</h4><p>Env_tool整体是基于Python3开发，使用第三方Mako库生成环境。Mako库是一个模板文件的渲染库，可以通过特定的语法替换模板中的变量，并且Mako模板特定块中也可以支持python语法。整个UVM环境的所有system verilog文件，packege文件，h头文件均具有一个基于Mako库的template文件。Python主程序根据系统参数来生成和配置template文件所需的变量，经过Mako库解析后，将所有template文件生成为实际的UVM框架文件。</p>
+<p>Mako语法参考：<a target="_blank" rel="noopener" href="https://blog.csdn.net/u010759746/article/details/53379564">link</a></p>
+<p>Env_tool的python整体结构简明，包括gen_agent.py和gen_env.py，分别为产生agent的脚本和产生环境的脚本。</p>
+<h4 id="3-3-使用方法"><a href="#3-3-使用方法" class="headerlink" title="3.3 使用方法"></a>3.3 使用方法</h4><p>在dv&#x2F;common_script&#x2F;env_tool&#x2F;README中列举了env_tool的五种基本使用方式。<br>使用方式一：生成agent命令</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">./dvgen.py -a [agent_name]</span><br><span class="line">-a ：表示生成agent，指定agent的名称</span><br></pre></td></tr></table></figure>
+
+<p>使用方式二：生成ip_env命令</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">./dvgen.py -e [env_name] -p [project_name] -ea [agent_name] [agent_number] [agent_mode] -has_cmodel -has_amba -uvm</span><br><span class="line">-e [env_name]：表示生成env，指定env的名称</span><br><span class="line">-p [project_name]：表示项目名称，出现在文件的头注释里</span><br><span class="line">-ea [agent_name] [agent_number] [agent_mode]：表示在环境中例化agent的名称，数量，工作模式。这里agent已经在common_agent下存在</span><br><span class="line">-has_cmodel：表示环境中有cmodel，会在reference model和scoreboard中有相应的处理cmodel的代码</span><br><span class="line">-has_amba：表示环境中需要集成amba vip</span><br><span class="line">-uvm：表示生成的是uvm环境，会在编译选项中增加相应的编译选项</span><br></pre></td></tr></table></figure>
+
+<p>使用方式三：生成soc_env命令（sub_sys_env命令相同）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">./dvgen.py -e [env_name] -p [project_name] </span><br><span class="line">           -ee [env_name] [env_level]  </span><br><span class="line">           -ea [agent_name] [agent_number] [agent_mode] </span><br><span class="line">           -soc -has_cmodel -has_amba -uvm</span><br><span class="line">-e [env_name]：表示生成env，指定env的名称</span><br><span class="line">-p [project_name]：表示项目名称，出现在文件的头注释里</span><br><span class="line">-ee [env_name] [env_name_num] [env_level]：表示在环境中例化子环境的名称，此子环境的个数和层级（ip/sub_sys/soc）</span><br><span class="line">-ea [agent_name] [agent_number] [agent_mode]：与ip环境的使用方法相同</span><br><span class="line">-soc：表示生成的是顶层环境而不是底层的ip环境    </span><br><span class="line">-has_cmodel：表示环境中有cmodel，会在reference model和scoreboard中有相应的处理cmodel的代码</span><br><span class="line">-has_amba：表示环境中需要集成amba vip</span><br><span class="line">-uvm：表示生成的是uvm环境，会在编译选项中增加相应的编译选项</span><br><span class="line">-rn 表示顶层环境中也有寄存器相关代码需要生成，top reg是寄存器模型的名称</span><br><span class="line">-time 后面跟时间日期可以修改生成文件的时间戳，体现在文件头注释中</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="4-Reg-Tool"><a href="#4-Reg-Tool" class="headerlink" title="4 Reg_Tool"></a>4 Reg_Tool</h3><p>Reg_Tool 是基于Python脚本的框架工具，集成了不同用途的子功能函数，可以基于统一描述格式的寄存器列表，产生UVM环境框架所需的寄存器模型测试相关文件和配置相关的依赖文件。Reg_Tool 名字中的前缀 “Reg” 代表本脚本所有功能皆围绕“ 寄存器 ”展开，帮助UVM平台搭建者自动完成的功能有：</p>
+<blockquote>
+<p>寄存器模型生成。</p>
+</blockquote>
+<blockquote>
+<p>寄存器Constraint生成。</p>
+</blockquote>
+<blockquote>
+<p>寄存器Coverage生成。</p>
+</blockquote>
+<blockquote>
+<p>寄存器CModel配置文件生成。</p>
+</blockquote>
+<blockquote>
+<p>寄存器Yaml配置机制生成。</p>
+</blockquote>
+<blockquote>
+<p>寄存器九步法检查寄存器读写。</p>
+</blockquote>
+<blockquote>
+<p>寄存器Debug文件生成。</p>
+</blockquote>
+<h4 id="4-1-设计思想"><a href="#4-1-设计思想" class="headerlink" title="4.1 设计思想"></a>4.1 设计思想</h4><p>Reg_Tool使用了面向对象编程OOP（Object Oriented Programming）的思想，把每个子功能视作一个对象，每个对象可以拥有各自的数据和处理方法，同时可以通过句柄索引其他对象实例的内容。<br>众多分离式子功能脚本共同使用到的寄存器变量和方法(Methods) 被放入到一个公共类中，方便统一调用。<br>如下图所示（link）：通过在公共类建立统一的工作流程（Work Procedures），将所有子功能的步骤均包含在这个流程中,从而公共类每个步骤运行时都会调用所有子功能对象内部相应函数，从而协调所有子功能完成各自的工作。</p>
+<img src="/images/dv-uvm-pioneer1/2.jpg" width="70%" heiht="70%">
+
+
+<h4 id="4-2-运行方式"><a href="#4-2-运行方式" class="headerlink" title="4.2 运行方式"></a>4.2 运行方式</h4><ul>
+<li>准备好<code>$&#123;module_name&#125;_boot_config.py</code>文件，<br>并放入<code>&#123;reg_tool_path&#125;/code_gen_lib/boot_config</code> 文件夹中</li>
+<li>python3.x环境</li>
+<li>专用于excel读取的python第三方库：xlrd 1.1.0。已经集成在Reg_Tool中。</li>
+<li>单独运行，包含3个参数，分别是：寄存器列表名称，模块名，寄存器列表sheet_name</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ cd $&#123;reg_tool_path&#125;</span><br><span class="line">$ python3.6 code_gen_all.py  [ARG1] [ARG2] [ARG3]</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="5-Sim-Tool"><a href="#5-Sim-Tool" class="headerlink" title="5 Sim_Tool"></a>5 Sim_Tool</h3><p>Sim_tool的主要功能有：调用reg_tool自动生成验证需要的寄存器模型，编译参考模型（cmodel）生成动态库，编译运行testcase，生成验证结果和覆盖率报告。</p>
+<h4 id="5-1-设计思想"><a href="#5-1-设计思想" class="headerlink" title="5.1 设计思想"></a>5.1 设计思想</h4><p>Sim_Tool的宗旨是尽可能的依赖脚本实现自动化验证工作，避免需要手动修改进行测试验证。自动化验证应该覆盖寄存器模型的生成，参考模型的生成，编译原型case，验证报告的生成，覆盖率的生成，随机分布报告生成。sim_tool工具遵循以下几点规则：</p>
+<ul>
+<li>用户可以通过cmd line完成测试的所有功能。<br>用户命令行交互方式使用的python 的argparse。argparse机制是Python内置的一个用于命令项选项与参数解析的模块，通过在程序中定义好我们需要的参数，然后 argparse将会从sys.argv中解析出那些参数。argparse 模块还会生成帮助和使用手册，并在用户给程序传入无效参数时报出错误信息。同时，还支持命令行缩写。</li>
+<li>对于跟用户或者项目相关的个性功能，用户能通过提供给用户的脚本定制。<br>工具使用的clean 功能，cmodelgen 等功能，都会调用用户目录下对应的脚本。用户可以修改工程下对应的脚本，指定具体的实现方法。比如说-cmodelgen选项，用户可以修改工程目录下的gen_so.sh，指定具体编译cmodel 的方法。 </li>
+<li>框架可扩展性高，后续增加新功能不需要修改基本框架。</li>
+</ul>
+<h4 id="5-2-使用方法"><a href="#5-2-使用方法" class="headerlink" title="5.2 使用方法"></a>5.2 使用方法</h4><p>目前支持的参数有：</p>
+<img src="/images/dv-uvm-pioneer1/3.jpg" width="70%" heiht="70%">
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">- help：打印帮助信息</span><br><span class="line">- coverage：添加收集覆盖率选项(-cm line+cond+fsm+branch+assert +optconfigfile $covCfgFile -cm_hier $covHierFile -cm_dir $covDirFile)</span><br><span class="line">    - line：使能line coverage；</span><br><span class="line">    - cond：使能cond coverage；</span><br><span class="line">    - tgl：使能toggle coverage；</span><br><span class="line">    - fsm：使能FSM coverage；</span><br><span class="line">    - branch：使能branch coverage；</span><br><span class="line">    - assert：使能assert coverage；</span><br><span class="line">    - optconfigfile：配置文件允许启用或者禁用某些对设计对象的优化，例如自动避免生成auto cross bin等；</span><br><span class="line">    - cm_hier：指定覆盖率的hierarchy；</span><br><span class="line">    - cm_dir：指定coverage生成文件的存放目录；</span><br><span class="line">- yaml：测试使用的yaml文件，可使用相对路径或者绝对路径</span><br><span class="line">- random_dist：生成随机分布报告，可以选择传参，参数为随机分布文件前缀，不传参默认输入的随机分布文件为random_dist_\d+.cfg</span><br><span class="line">- list：列出yaml文件里面所有的测试case</span><br><span class="line">- regression：指定本次测试为回归测试，将测试yaml文件里面所有case</span><br><span class="line">- test：必须传入一个参数，此参数为指定测试的case（case必须是yaml 文件里面的case）</span><br><span class="line">- compile：强制重新编译。此选项将清空编译文件夹，重新编译</span><br><span class="line">- run：运行regression 选项的case或者test选项指定的case</span><br><span class="line">- dumpoff：关闭波形输出。regression模式默认关闭波形，single模式默认开启波形。</span><br><span class="line">- cmodelgen：调用当前目录下的gen_so.sh脚本，生成验证需要的cmodel相关的文件。用户需要在gen_so.sh使用shell命令实现进入cmodel文件夹，cmodel 编译，拷贝等操作</span><br><span class="line">- reggen：调用当前目录下的gen_reg.sh脚本，生成验证需要的寄存器模型相关的文件。用户需要在gen_reg.sh指定生成寄存器模型的excel 和ip，以及拷贝生成文件等操作。</span><br><span class="line">- clean：调用当前目录下的clean.sh脚本，清理掉用户不需要的文件。用户可以在clean.sh里指定具体的clean操作。</span><br><span class="line">- uvm_debug：UVM调试选项。添加此选项会打开verdi，进入UVM交互界面，用户可用来调试运行验证代码。具体参数如下：</span><br><span class="line">    （+ntb_binary_debug_solver_cpu_limit=20 +ntb_linear_debug_solver_cpu_limit=20 -gui=verdi +UVM_VERDI_TRACE=UVM_AWARE+HIER）</span><br><span class="line">- max_process：regression使用，指定最大并行运行的case数。默认为10。最大支持64。</span><br><span class="line">- round：指定yaml文件内case运行次数，默认是1。如果传参-round 5，所有yaml文件的case会全部运行5次。</span><br><span class="line">- seed：指定验证的随机种子。如果不指定，默认使用0~100000000内随机数。</span><br></pre></td></tr></table></figure>
+
+<h4 id="5-3-测试与回归"><a href="#5-3-测试与回归" class="headerlink" title="5.3 测试与回归"></a>5.3 测试与回归</h4><ul>
+<li>指定测试对应的测试case:</li>
+</ul>
+<p><em>comp 和run选项决定是否编译运行，如果不需要编译，只指定run选项即可。comp 和run选项必须选择一个以上选项。</em></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./dvsim.py -yaml ../yaml/eis_test.yaml -test eis_test_num1_1_num2_1 -comp -run</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>更新寄存器模型代码编译：</li>
+</ul>
+<p><em>添加-reggen选项 ：如果需要生成寄存器模型代码，或者更新寄存器模型代码，需要打开此选项</em></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./dvsim.py -yaml ../yaml/eis_test.yaml -test eis_test_num1_1_num2_1 -comp -run -reggen</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>更新cmodel库编译运行：</li>
+</ul>
+<p><em>添加-cmodelgen编译运行：如果更新了cmodel，需要重新生成cmodel 的库文件，-cmodelgen选项会在编译运行之前编译cmodel 库文件。</em></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./dvsim.py -yaml ../yaml/eis_test.yaml -test eis_test_num1_1_num2_1 -comp -run -reggen -cmodelgen</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>指定随机种子测试：</li>
+</ul>
+<p><em>添加-seed 选项：如果需要指定随机种子测试验证，使用-seed 选项，testbench 将使用seed 选项传入的随机种子。</em></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./dvsim.py -yaml ../yaml/eis_test.yaml -test eis_test_num1_1_num2_1 -comp -run -reggen -cmodelgen -seed 123</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>回归测试yaml case：</li>
+</ul>
+<p><em>使用-regress 选项：-regress 选项将回归测试yaml 的所有case。</em></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./dvsim.py -yaml ../yaml/eis_test.yaml -regress -comp -run -reggen -cmodelgen</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>多轮回归测试yaml case：</li>
+</ul>
+<p><em>回归测试的时候，添加-round 选项，可以指定回归测试的次数，默认所有case的回归测试次数为1次。</em></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./dvsim.py -yaml ../yaml/eis_test.yaml -regress -comp -run -reggen -cmodelgen -round 5</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>regress 测试下自动提交jira bugs：</li>
+</ul>
+<p><em>修改 <code>jiraUserInfo.json</code> 文件指定jira server地址，jira用户名，登陆密码等信息。<code>-jira</code> 选项可自动提交bug至jira系统</em></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">./dvsim.py -yaml ../yaml/eis_test.yaml -regress -comp -run -reggen -cmodelgen -jira</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+
+    </div>
+
+    
+    
+    
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/images/wechat_channel.png">
+            <span class="icon">
+              <i class="fab fa-weixin"></i>
+            </span>
+
+            <span class="label">WeChat</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/09/06/dv-uvm-testplan/" rel="prev" title="Verification Testplan Template">
+      <i class="fa fa-chevron-left"></i> Verification Testplan Template
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E8%87%AA%E5%8A%A8%E5%8C%96%E9%AA%8C%E8%AF%81%E5%B9%B3%E5%8F%B0%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">1 自动化验证平台简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Common-Lib"><span class="nav-number">2.</span> <span class="nav-text">2 Common_Lib</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-Common-agent"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 Common_agent</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-Common-if"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 Common_if</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-DV-Util%E5%8A%9F%E8%83%BD"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 DV_Util功能</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-DV-Lib%E7%BB%93%E6%9E%84"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 DV_Lib结构</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Env-Tool"><span class="nav-number">3.</span> <span class="nav-text">3 Env_Tool</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-%E8%AE%BE%E8%AE%A1%E6%80%9D%E6%83%B3"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 设计思想</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 实现方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 使用方法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-Reg-Tool"><span class="nav-number">4.</span> <span class="nav-text">4 Reg_Tool</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-%E8%AE%BE%E8%AE%A1%E6%80%9D%E6%83%B3"><span class="nav-number">4.1.</span> <span class="nav-text">4.1 设计思想</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-%E8%BF%90%E8%A1%8C%E6%96%B9%E5%BC%8F"><span class="nav-number">4.2.</span> <span class="nav-text">4.2 运行方式</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-Sim-Tool"><span class="nav-number">5.</span> <span class="nav-text">5 Sim_Tool</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#5-1-%E8%AE%BE%E8%AE%A1%E6%80%9D%E6%83%B3"><span class="nav-number">5.1.</span> <span class="nav-text">5.1 设计思想</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-2-%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95"><span class="nav-number">5.2.</span> <span class="nav-text">5.2 使用方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-3-%E6%B5%8B%E8%AF%95%E4%B8%8E%E5%9B%9E%E5%BD%92"><span class="nav-number">5.3.</span> <span class="nav-text">5.3 测试与回归</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Moss Shen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="/shensongjian@gmail.com" title="E-Mail → shensongjian@gmail.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Moss Shen</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
