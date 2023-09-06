@@ -145,6 +145,93 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/09/06/dv-uvm-pioneer1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Moss Shen">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MOSS' blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/09/06/dv-uvm-pioneer1/" class="post-title-link" itemprop="url">自动化UVM验证平台</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2023-09-06 12:24:53 / 修改时间：12:22:40" itemprop="dateCreated datePublished" datetime="2023-09-06T12:24:53+08:00">2023-09-06</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <hr>
+<h3 id="1-自动化UVM验证框架简介"><a href="#1-自动化UVM验证框架简介" class="headerlink" title="1 自动化UVM验证框架简介"></a>1 自动化UVM验证框架简介</h3><p>基于Google的OpenTitan框架搭建自动化UVM验证平台，具备从IP级到子系统级，NOC总线级和SOC系统级的验证垂直复用功能。它包括四个基本组件：dv_lib，env_tool，reg_tool和sim_tool。其中dv_lib是一套基于UVM框架的basic结构和通用函数集合；env_tool是基于python语言的验证平台生成器，可以生成uvm验证框架的大部分内容，同时还可以生成具有统一结构的agent模板；reg_tool是基于python语言的自动化寄存器模型测试平台，可以根据寄存器列表excel文件生成uvm register model验证相关的类和函数；sim_tool是基于pyton语言的仿真调度平台，可以支持多种模式的仿真和日志文件分析，同时支持多线程并发操作。</p>
+<img src="/images/dv-uvm-pioneer1/1.jpg" width="100%" heiht="100%">
+
+<blockquote>
+<p>common_lib：包含通用的库文件，目前集成的有dv_lib, amba_vip, assert_lib。同时，验证项目公用的agent也放在此目录下。</p>
+</blockquote>
+<blockquote>
+<p>common_script：包含基于python的reg_tool, env_tool和sim_tool。</p>
+</blockquote>
+<blockquote>
+<p>common_dpi：包含公用的reference model，一般都是基于C或C++语言开发。</p>
+</blockquote>
+<blockquote>
+<p>ip_env：包含所有的IP验证环境，且各个IP的验证环境具有相同的结构。</p>
+</blockquote>
+<blockquote>
+<p>sub_sys_env：多个IP环境集成复用成一个子系统验证环境，在IP验证环境中的agent会自动配置成passive模式，只做monitor侦听和scorboard比对。</p>
+</blockquote>
+<blockquote>
+<p>soc_env：包含NOC总线验证环境和SOC验证环境。其中NOC验证环境会将总线上所有的amba master替换为amba vip，用来全面覆盖总线的功能和评估总线的性能；SOC验证环境会集成sub_sys_env和CPU，在芯片级做寄存器测试和上下电测试。</p>
+</blockquote>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2023/09/06/dv-uvm-pioneer1/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2023/09/06/dv-uvm-testplan/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -375,87 +462,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2023/08/22/fpga-verification-system/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Moss Shen">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="MOSS' blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2023/08/22/fpga-verification-system/" class="post-title-link" itemprop="url">FPGA Verification System</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2023-08-22 10:03:16" itemprop="dateCreated datePublished" datetime="2023-08-22T10:03:16+08:00">2023-08-22</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2018-01-15 14:02:27" itemprop="dateModified" datetime="2018-01-15T14:02:27+08:00">2018-01-15</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>The FPGA verification system consists of image sensor, LCD display and PC running ISP tools. With this system, verification engineer can get real time image data from ISP or H264 which will improve work efficiency.</p>
-<h3 id="Outline"><a href="#Outline" class="headerlink" title="Outline"></a>Outline</h3><blockquote>
-<ul>
-<li>USB3.0 board</li>
-<li>DPHY RX&#x2F;TX Board</li>
-<li>USB&#x2F;FPGA Protocol</li>
-<li>UDMA Structure</li>
-<li>LVDS RX&#x2F;TX Structure</li>
-</ul>
-</blockquote>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2023/08/22/fpga-verification-system/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2023/08/22/github-page-setup/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -628,6 +634,87 @@
   
   
 
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/08/22/fpga-verification-system/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Moss Shen">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MOSS' blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/08/22/fpga-verification-system/" class="post-title-link" itemprop="url">FPGA Verification System</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-08-22 10:03:16" itemprop="dateCreated datePublished" datetime="2023-08-22T10:03:16+08:00">2023-08-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2018-01-15 14:02:27" itemprop="dateModified" datetime="2018-01-15T14:02:27+08:00">2018-01-15</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>The FPGA verification system consists of image sensor, LCD display and PC running ISP tools. With this system, verification engineer can get real time image data from ISP or H264 which will improve work efficiency.</p>
+<h3 id="Outline"><a href="#Outline" class="headerlink" title="Outline"></a>Outline</h3><blockquote>
+<ul>
+<li>USB3.0 board</li>
+<li>DPHY RX&#x2F;TX Board</li>
+<li>USB&#x2F;FPGA Protocol</li>
+<li>UDMA Structure</li>
+<li>LVDS RX&#x2F;TX Structure</li>
+</ul>
+</blockquote>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2023/08/22/fpga-verification-system/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
 
   
 
@@ -694,7 +781,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-count">7</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
