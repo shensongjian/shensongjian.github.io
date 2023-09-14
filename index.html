@@ -155,6 +155,96 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/09/14/dv-uvm-reuse/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Moss Shen">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MOSS' blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/09/14/dv-uvm-reuse/" class="post-title-link" itemprop="url">IP验证环境及水平复用</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2023-09-14 11:03:27 / 修改时间：11:03:03" itemprop="dateCreated datePublished" datetime="2023-09-14T11:03:27+08:00">2023-09-14</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <hr>
+<h3 id="1-IP环境结构"><a href="#1-IP环境结构" class="headerlink" title="1 IP环境结构"></a>1 IP环境结构</h3><p>ip环境结构如图所示。basetest中主要包括base_test_cfg,reg_model,ddr_mem和env四个部分。</p>
+<img src="/images/dv-uvm-reuse/0.png" width="100%" heiht="100%">
+
+<blockquote>
+<p>base_test_cfg作为整个testcase的最顶层的配置，其内部包含了env_cfg和一些配置变量</p>
+</blockquote>
+<blockquote>
+<p>reg_model在basetest中例化配置连接，并将其发送到env_cfg中</p>
+</blockquote>
+<blockquote>
+<p>amba_vip中涉及到ddr_mem的，ddr_mem在basetest中创建，并将发送到env_cfg中</p>
+</blockquote>
+<blockquote>
+<p>环境的env，env中有以下几个部分</p>
+<ul>
+<li>virtual sequencer：所有sequencer的句柄都在virtual sequencer中</li>
+<li>reference model：参考模型</li>
+<li>scoreboard：用于比较参考模型和DUT输出的数据</li>
+<li>各个agent：分别用于发送和收集transaction</li>
+<li>amba env：amba vip的顶层环境包括axi，ahb，apb，其配置在env_cfg中例化</li>
+<li>env cfg：严格来说不属于env的组件，它是环境的配置文件。包含各个agent的配置以及amba vip的配置。env cfg会被virtual sequencer，reference model，scoreboard所共用</li>
+<li>virtual sequence严格来说不属于env的组件，它是在basetest中启动在virtual sequencer上的顶层sequence，在其中需要根据需求在对应的sequencer上启动所需的sequence(包括agent seuqence和amba vip sequence)</li>
+</ul>
+</blockquote>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2023/09/14/dv-uvm-reuse/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2023/09/06/dv-uvm-pioneer1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -793,7 +883,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-count">8</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

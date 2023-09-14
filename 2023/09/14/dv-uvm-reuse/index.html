@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="1 IP环境结构ip环境结构如图所示。basetest中主要包括base_test_cfg,reg_model,ddr_mem和env四个部分。    base_test_cfg作为整个testcase的最顶层的配置，其内部包含了env_cfg和一些配置变量   reg_model在basetest中例化配置连接，并将其发送到env_cfg中   amba_vip中涉及到ddr_mem的，ddr">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IP验证环境及水平复用">
+<meta property="og:url" content="http://example.com/2023/09/14/dv-uvm-reuse/index.html">
+<meta property="og:site_name" content="MOSS&#39; blog">
+<meta property="og:description" content="1 IP环境结构ip环境结构如图所示。basetest中主要包括base_test_cfg,reg_model,ddr_mem和env四个部分。    base_test_cfg作为整个testcase的最顶层的配置，其内部包含了env_cfg和一些配置变量   reg_model在basetest中例化配置连接，并将其发送到env_cfg中   amba_vip中涉及到ddr_mem的，ddr">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/dv-uvm-reuse/0.png">
+<meta property="og:image" content="http://example.com/images/dv-uvm-reuse/1.png">
+<meta property="og:image" content="http://example.com/images/dv-uvm-reuse/2.png">
+<meta property="og:image" content="http://example.com/images/dv-uvm-reuse/3.png">
+<meta property="og:image" content="http://example.com/images/dv-uvm-reuse/4.png">
+<meta property="article:published_time" content="2023-09-14T03:03:27.027Z">
+<meta property="article:modified_time" content="2023-09-14T03:03:03.389Z">
+<meta property="article:author" content="Moss Shen">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/dv-uvm-reuse/0.png">
+
+<link rel="canonical" href="http://example.com/2023/09/14/dv-uvm-reuse/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>IP验证环境及水平复用 | MOSS' blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">MOSS' blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/09/14/dv-uvm-reuse/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Moss Shen">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MOSS' blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          IP验证环境及水平复用
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2023-09-14 11:03:27 / 修改时间：11:03:03" itemprop="dateCreated datePublished" datetime="2023-09-14T11:03:27+08:00">2023-09-14</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <hr>
+<h3 id="1-IP环境结构"><a href="#1-IP环境结构" class="headerlink" title="1 IP环境结构"></a>1 IP环境结构</h3><p>ip环境结构如图所示。basetest中主要包括base_test_cfg,reg_model,ddr_mem和env四个部分。</p>
+<img src="/images/dv-uvm-reuse/0.png" width="100%" heiht="100%">
+
+<blockquote>
+<p>base_test_cfg作为整个testcase的最顶层的配置，其内部包含了env_cfg和一些配置变量</p>
+</blockquote>
+<blockquote>
+<p>reg_model在basetest中例化配置连接，并将其发送到env_cfg中</p>
+</blockquote>
+<blockquote>
+<p>amba_vip中涉及到ddr_mem的，ddr_mem在basetest中创建，并将发送到env_cfg中</p>
+</blockquote>
+<blockquote>
+<p>环境的env，env中有以下几个部分</p>
+<ul>
+<li>virtual sequencer：所有sequencer的句柄都在virtual sequencer中</li>
+<li>reference model：参考模型</li>
+<li>scoreboard：用于比较参考模型和DUT输出的数据</li>
+<li>各个agent：分别用于发送和收集transaction</li>
+<li>amba env：amba vip的顶层环境包括axi，ahb，apb，其配置在env_cfg中例化</li>
+<li>env cfg：严格来说不属于env的组件，它是环境的配置文件。包含各个agent的配置以及amba vip的配置。env cfg会被virtual sequencer，reference model，scoreboard所共用</li>
+<li>virtual sequence严格来说不属于env的组件，它是在basetest中启动在virtual sequencer上的顶层sequence，在其中需要根据需求在对应的sequencer上启动所需的sequence(包括agent seuqence和amba vip sequence)</li>
+</ul>
+</blockquote>
+<span id="more"></span>
+
+<hr>
+<h3 id="2-IP环境目录"><a href="#2-IP环境目录" class="headerlink" title="2 IP环境目录"></a>2 IP环境目录</h3><img src="/images/dv-uvm-reuse/1.png" width="70%" heiht="70%">
+
+
+<h4 id="2-1-config文件夹"><a href="#2-1-config文件夹" class="headerlink" title="2.1 config文件夹"></a>2.1 config文件夹</h4><blockquote>
+<p>constraint_common.sv中主要包括一个constraint和一个post_common_randomize函数，都在system_cfg class中</p>
+</blockquote>
+<blockquote>
+<p>coverage_common.sv文件是system_cfg class中的覆盖组的定义</p>
+</blockquote>
+<blockquote>
+<p>include文件夹下都是根据寄存器列表直接生成的文件，不需要手动修改</p>
+</blockquote>
+<blockquote>
+<p>config.f是所有config的filelist，其中包括将当前文件夹加入incdir和config_pkg.sv</p>
+</blockquote>
+<blockquote>
+<p>config_pkg.sv定义了config_pkg，其中主要的是三个类：uvm_reg_config_base，system_cfg和amba的配置类。根据环境的层级，是否有寄存器以及是否有amba vip来选择性地将这三个类加入到pkg中</p>
+</blockquote>
+<blockquote>
+<p>coverage.cfg 覆盖率配置文件，产生代码覆盖率需要用到</p>
+</blockquote>
+<blockquote>
+<p>cust_svt_amba_system_configuration.sv是vip的配置类，主要包括四个set_amba_sys_config,set_axi_system_configuration,set_ahb_system_configuration,set_apb_system_configuration,都是配置各个vip的具体配置，详情请阅读该文件，模板中给出的是1个axi system两个ahb system和两个apb system的配置</p>
+</blockquote>
+<blockquote>
+<p>optconfigfile.cfg设置covergroup不会自动生成cross的coverpoint</p>
+</blockquote>
+<blockquote>
+<p>system_cfg.sv继承自uvm_reg_config_base，拥有所有寄存器列表的参数作为变量。class的外面包含了两个全局变量，用于记录寄存器的值和与cmodel做交互的cmodel_struct。class内部包含了constraint_common.sv（约束）和coverage_common.sv（覆盖组）。在pre_randomize函数中通过clp获取或有的寄存器的值。save_config_to_file函数会将所有的配置打印成文件方便debug</p>
+</blockquote>
+<h4 id="2-2-doc文件夹"><a href="#2-2-doc文件夹" class="headerlink" title="2.2 doc文件夹"></a>2.2 doc文件夹</h4><blockquote>
+<p>README.yaml 描述环境的一些常见使用方法</p>
+</blockquote>
+<h4 id="2-3-env文件夹"><a href="#2-3-env文件夹" class="headerlink" title="2.3 env文件夹"></a>2.3 env文件夹</h4><blockquote>
+<p>env.f 环境的filelist，其中包括用户自定义的宏定义、整个dut的接口、如果是soc环境还有子环境的env的filelist、各个agent的filelist、config的filelist、transaction的filelist、env_pkg、equence的filelist以及宏定义的undef</p>
+</blockquote>
+<blockquote>
+<p>env.sv 包含子环境，vip环境各个agent 与agent相关的fifo的声明例化和连接。并且环境中也做了cfg配置和ddr_mem的逐层传递。reset_phase中做了所有fifo的清空</p>
+</blockquote>
+<blockquote>
+<p>env_cfg.sv 如果是soc环境，该env_cfg中会包含子环境的env_cfg，而soc和ip的env中都会有agent的cfg，amba_vip的cfg（根据选项产生）。gen_one_frame函数用于生成一帧的寄存器配置并将配置放入到一个队列中。save_config_amd_sample_cov函数用于保存配置文件，并做覆盖率的sample</p>
+</blockquote>
+<blockquote>
+<p>env_cov.sv 没有用到的覆盖组件，现阶段覆盖率都在coverage_common.sv中实现</p>
+</blockquote>
+<blockquote>
+<p>env_pkg.sv包含所有的env的calss：寄存器模型，env_cfg，env_cov，virtual_sequencer，scoreboard，reference_model和env</p>
+</blockquote>
+<blockquote>
+<p>reference_model.sv中有所有的agent进来的port，port进来后存储的queue，以及自动将port中的数据放到queue的task。整个reference model的流程是从port中拿tr，处理tr并生成输出的tr，将tr发送到对应的port上给scoreborad</p>
+</blockquote>
+<blockquote>
+<p>scoreboard.sv用于将从dut和reference model过来的数据做对比，或者将cmodel输出的文件和ddr_mem中的数据做对比</p>
+</blockquote>
+<blockquote>
+<p>uvm_reg_block.sv 寄存器模型，顶层环境的寄存器模型会集成底层环境的寄存器模型，最底层的ip环境的寄存器模型用脚本自动生成</p>
+</blockquote>
+<blockquote>
+<p>virtual_sequencer.s包括是所有agent的sequencer，amba_vip的sequencer，以及子环境的virtual_sequener</p>
+</blockquote>
+<h4 id="2-4-param-def文件夹"><a href="#2-4-param-def文件夹" class="headerlink" title="2.4 param_def文件夹"></a>2.4 param_def文件夹</h4><blockquote>
+<p>defines.sv中是agent的数量定义的宏以及用户自定义的宏</p>
+</blockquote>
+<blockquote>
+<p>svt_amba_user_defines.sv中是amba_vip的一些常用宏定义，但是都是注释掉的，需要根据项目需求手动打开</p>
+</blockquote>
+<blockquote>
+<p>undefines.sv用于解除defines.sv中的所有宏定义防止多个环境复用的时候宏定义重复</p>
+</blockquote>
+<h4 id="2-5-sequence文件夹"><a href="#2-5-sequence文件夹" class="headerlink" title="2.5 sequence文件夹"></a>2.5 sequence文件夹</h4><blockquote>
+<p>amba各个协议的master和slave sequence</p>
+</blockquote>
+<blockquote>
+<p>reg_csr_sequence.sv中如果是soc就调用子环境的reg_csr_sequence,如果是IP环境就会做脚本自动生成的九步法测试</p>
+</blockquote>
+<blockquote>
+<p>reg_init_sequence.sv中是调用脚本自动生成的task用于配置寄存器</p>
+</blockquote>
+<blockquote>
+<p>reg_isr_sequence.sv中通过配置ip启动寄存器后等待中断的流程</p>
+</blockquote>
+<blockquote>
+<p>reg_sequence_base.sv init和isr sequence的基类，包含了所有需要用到的task</p>
+</blockquote>
+<blockquote>
+<p>sequence.f filelist</p>
+</blockquote>
+<blockquote>
+<p>sequence_pkg.sv sequence的package</p>
+</blockquote>
+<blockquote>
+<p>virtual_sequence.sv 环境的virtual sequence在testcase中的main_phase中运行。所有的子sequence包括寄存器相关的sequence，vip相关的sequence以及agent上的sequence都在这个sequence中统一调用。如果是soc的环境还会自动调用子环境的virtual sequence</p>
+</blockquote>
+<h4 id="2-6-sim文件夹"><a href="#2-6-sim文件夹" class="headerlink" title="2.6 sim文件夹"></a>2.6 sim文件夹</h4><blockquote>
+<p>clean.sh运行清理脚本，会删除除了波形和回归文件夹外的其他所有运行过程中生成的文件</p>
+</blockquote>
+<blockquote>
+<p>gen_reg.sh 生成寄存器相关的文件脚本，需要手动更改部分配置，该脚本可以通过dvsim脚本调用</p>
+</blockquote>
+<blockquote>
+<p>gen_so.sh 生成so的脚本，dvsim调用这个文件时需要加-cmodelgen选项</p>
+</blockquote>
+<blockquote>
+<p>load 波形加载脚本执行后可以打开波形</p>
+</blockquote>
+<blockquote>
+<p>sim_run_options 运行过程的option配置，已经添加了最基本的选项</p>
+</blockquote>
+<blockquote>
+<p>SourceMe 环境变量设置，在运行仿真之前都需要source这个</p>
+</blockquote>
+<blockquote>
+<p>vcs_build_options vcs编译时需要用到的所有选项</p>
+</blockquote>
+<h4 id="2-7-testcase文件夹"><a href="#2-7-testcase文件夹" class="headerlink" title="2.7 testcase文件夹"></a>2.7 testcase文件夹</h4><blockquote>
+<p>base_test.sv里面的功能包括：</p>
+</blockquote>
+<blockquote>
+<ul>
+<li>ddr_mem的例化</li>
+<li>amba vip transaction的重载</li>
+<li>env_cfg的传递到env</li>
+<li>配置所有的时钟和reset</li>
+<li>调用gen_one_frame和save_config_and_sample_cov</li>
+<li>创建寄存器模型</li>
+<li>将寄存器模型句柄传递到env_cfg</li>
+<li>将ddr_mem传递到env_cfg</li>
+<li>将ddr_mem传递给vip实际使用的slave</li>
+<li>connect phase做寄存器adapter的连接</li>
+<li>end_of_elaboration_phase中提供了一些常用功能的代码</li>
+<li>run_phase一般不用</li>
+<li>reset_phase中对ddr_mem做随机初始化，并在时钟复位接口上输出reset信号</li>
+<li>main_phase中调用virtual_sequence</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>base_test_cfg.sv包含一些调节vip响应的变量，所有agent的配置文件，如果是soc环境还需要手动配置所有子环境的agent的模式和子环境中vip的模式</p>
+</blockquote>
+<blockquote>
+<p>csr_test.sv 寄存器测试专用case，case中调用csr_test_sequence</p>
+</blockquote>
+<blockquote>
+<p>random_dist.sv 随机分布专用case用于统计随机值的分布</p>
+</blockquote>
+<blockquote>
+<p>test_pkg.sv包含所有的testcase文件夹下的calss</p>
+</blockquote>
+<blockquote>
+<p>tescase.f testcase filelist incdir和test_pkg</p>
+</blockquote>
+<h4 id="2-8-top-tb文件夹"><a href="#2-8-top-tb文件夹" class="headerlink" title="2.8 top_tb文件夹"></a>2.8 top_tb文件夹</h4><blockquote>
+<p>all_so.f 所有需要用到的so库文件都要写在这里，名称不带后缀so</p>
+</blockquote>
+<blockquote>
+<p>dump.sv dumpfsdb的代码，会被include到top_tb中</p>
+</blockquote>
+<blockquote>
+<p>if.sv 整个dut的interface</p>
+</blockquote>
+<blockquote>
+<p>rtl.f rtl的filelist 许需要自己添加filelist</p>
+</blockquote>
+<blockquote>
+<p>run.f 验证环境的filelist基本不需要修改</p>
+</blockquote>
+<blockquote>
+<p>top_tb.sv top_tb 包括所有interface dut的例化连接和configdb传递到env中</p>
+</blockquote>
+<h4 id="2-9-transaction文件夹"><a href="#2-9-transaction文件夹" class="headerlink" title="2.9 transaction文件夹"></a>2.9 transaction文件夹</h4><blockquote>
+<p>cmodel_transaction.sv 用于cmodel的transaction，做reference和scoreboard之间的传递</p>
+</blockquote>
+<blockquote>
+<p>amba vip的transaction 主要做重载用，修改transaction的约束，修改概率分布</p>
+</blockquote>
+<blockquote>
+<p>transaction.f filelist</p>
+</blockquote>
+<blockquote>
+<p>transaction_pkg.sv 封装成package</p>
+</blockquote>
+<blockquote>
+<p>user_defined_transaction.sv 冗余transaction，类似callback的作用，有需要再用，没需要留空</p>
+</blockquote>
+<h4 id="2-10-yaml文件夹"><a href="#2-10-yaml文件夹" class="headerlink" title="2.10 yaml文件夹"></a>2.10 yaml文件夹</h4><blockquote>
+<p>包含所有测试阶段的yaml文件</p>
+</blockquote>
+<blockquote>
+<p>生成的文件夹中会自带两个yaml文件，一个用于寄存器测试，一个是写yaml的例子</p>
+</blockquote>
+<hr>
+<h3 id="3-水平复用"><a href="#3-水平复用" class="headerlink" title="3 水平复用"></a>3 水平复用</h3><p>UVM验证的核心思想是复用，分为水平复用和垂直复用，以及跨平台复用。在水平复用上，主要强调以下两点：</p>
+<ul>
+<li>Agent复用<ul>
+<li>agent结构的通用性</li>
+<li>agent功能的完备性</li>
+<li>agent配置的可扩展性</li>
+</ul>
+</li>
+<li>Sequence复用<ul>
+<li>sequence结构的通用性</li>
+<li>sequence功能的完备性</li>
+<li>sequence配置的可扩展性</li>
+</ul>
+</li>
+</ul>
+<h4 id="3-1-AGENT复用"><a href="#3-1-AGENT复用" class="headerlink" title="3.1 AGENT复用"></a>3.1 AGENT复用</h4><p>为保证复用性，所有Agent具有通用的结构，且所有组件均从dv base agent继承而来。包括以下几个组件：</p>
+<img src="/images/dv-uvm-reuse/2.png" width="70%" heiht="70%">
+
+<blockquote>
+<p>dv_agent: 所有agent内部组件的例化连接</p>
+</blockquote>
+<blockquote>
+<p>dv_agent_cfg: agent的配置文件 is_active和if_mode来控制agent的模式；</p>
+<ul>
+<li>is_active&#x3D;0：agent作为monitor，只用于采样数据</li>
+<li>is_active&#x3D;1，is_mode&#x3D;master：agent作为master模式，用于发送数据给DUT</li>
+<li>is_active&#x3D;1，is_mode&#x3D;slave：agent作为slave模式，用于和DUT有数据交互的接口</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>dv_driver: main_phase中fork了两个进程reset_signals和get_and_drive。子类实现时需要重写这两个函数，用来复位和驱动</p>
+</blockquote>
+<blockquote>
+<p>dv_monitor：子类需要重写collect_trans和watchdog_ok_to_end两个函数，collec_trans的主要作用是从接口上monitor数据，watch_dog_ok_to_end是agent的watchdog，用于监测agent接口上数据，从而判断agent是否在工作。这里给变量ok_to_end赋值为1，表示agent空闲，ok_to_end为0，表示agent在工作。同时需要调整cfg中的ok_to_end_delay_ns，这个变量的含义是，当ok_to_end等于1时，并且持续ok_to_end_delay_ns这么多ns的时间后ok_to_end仍然是1，才会drop_objection</p>
+</blockquote>
+<blockquote>
+<p>dv_sequencer：mon2sqr_port，req_port和rsp_port的例化（后面两个port很少用到）</p>
+</blockquote>
+<p>最后，将所有组件封装成一个package 和一个filelist，便于调用。</p>
+<h4 id="3-2-Sequence复用"><a href="#3-2-Sequence复用" class="headerlink" title="3.2 Sequence复用"></a>3.2 Sequence复用</h4><p>Sequence通用结构如下图所示，主要分成三个组件：</p>
+<ul>
+<li>Atomic sequence ： 完成基础操作</li>
+<li>BFM sequence ： 基于atomic seuqnce，实现总线行为</li>
+<li>Scenario sequence ： 基于BFM sequence，实现具体场景</li>
+</ul>
+<img src="/images/dv-uvm-reuse/3.png" width="70%" heiht="70%">
+
+<h4 id="3-2-1-Atomic-Sequence"><a href="#3-2-1-Atomic-Sequence" class="headerlink" title="3.2.1 Atomic Sequence"></a>3.2.1 Atomic Sequence</h4><p>原子sequence仅实现最基本的操作，比如发送trans，接收rsp。</p>
+<img src="/images/dv-uvm-reuse/4.png" width="70%" heiht="70%">
+
+<h4 id="3-2-2-BFM-sequence"><a href="#3-2-2-BFM-sequence" class="headerlink" title="3.2.2 BFM sequence"></a>3.2.2 BFM sequence</h4><p>BFM sequence实现跟总线行为相关的操作，这一部分应该根据标准协议来实现，然后调用Atomic sequence完成发送和接收。</p>
+<h4 id="3-2-3-Scenario-sequence"><a href="#3-2-3-Scenario-sequence" class="headerlink" title="3.2.3 Scenario sequence"></a>3.2.3 Scenario sequence</h4><p>场景sequence就是特性的测试场景，调用BFM sequence来实现。这种结构可以完全复用Atomic Sequence和BFM sequence。对于新增的场景测试，也能方便的调用BFM来实现。</p>
+<hr>
+<h3 id="4-总结"><a href="#4-总结" class="headerlink" title="4 总结"></a>4 总结</h3><p>基于特性框架的Agent，ENV和sequence结构，在不同项目之间，能够复用绝大部分代码和sequence测试场景。对于新增的feature，也可以在保留基础框架的情况下，快速的扩展原有环境，实现新增功能的测试。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/09/06/dv-uvm-pioneer1/" rel="prev" title="自动化UVM验证平台">
+      <i class="fa fa-chevron-left"></i> 自动化UVM验证平台
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-IP%E7%8E%AF%E5%A2%83%E7%BB%93%E6%9E%84"><span class="nav-number">1.</span> <span class="nav-text">1 IP环境结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-IP%E7%8E%AF%E5%A2%83%E7%9B%AE%E5%BD%95"><span class="nav-number">2.</span> <span class="nav-text">2 IP环境目录</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-config%E6%96%87%E4%BB%B6%E5%A4%B9"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 config文件夹</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-doc%E6%96%87%E4%BB%B6%E5%A4%B9"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 doc文件夹</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-env%E6%96%87%E4%BB%B6%E5%A4%B9"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 env文件夹</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-param-def%E6%96%87%E4%BB%B6%E5%A4%B9"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 param_def文件夹</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-5-sequence%E6%96%87%E4%BB%B6%E5%A4%B9"><span class="nav-number">2.5.</span> <span class="nav-text">2.5 sequence文件夹</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-6-sim%E6%96%87%E4%BB%B6%E5%A4%B9"><span class="nav-number">2.6.</span> <span class="nav-text">2.6 sim文件夹</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-7-testcase%E6%96%87%E4%BB%B6%E5%A4%B9"><span class="nav-number">2.7.</span> <span class="nav-text">2.7 testcase文件夹</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-8-top-tb%E6%96%87%E4%BB%B6%E5%A4%B9"><span class="nav-number">2.8.</span> <span class="nav-text">2.8 top_tb文件夹</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-9-transaction%E6%96%87%E4%BB%B6%E5%A4%B9"><span class="nav-number">2.9.</span> <span class="nav-text">2.9 transaction文件夹</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-10-yaml%E6%96%87%E4%BB%B6%E5%A4%B9"><span class="nav-number">2.10.</span> <span class="nav-text">2.10 yaml文件夹</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E6%B0%B4%E5%B9%B3%E5%A4%8D%E7%94%A8"><span class="nav-number">3.</span> <span class="nav-text">3 水平复用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-AGENT%E5%A4%8D%E7%94%A8"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 AGENT复用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-Sequence%E5%A4%8D%E7%94%A8"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 Sequence复用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-1-Atomic-Sequence"><span class="nav-number">3.3.</span> <span class="nav-text">3.2.1 Atomic Sequence</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-2-BFM-sequence"><span class="nav-number">3.4.</span> <span class="nav-text">3.2.2 BFM sequence</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-3-Scenario-sequence"><span class="nav-number">3.5.</span> <span class="nav-text">3.2.3 Scenario sequence</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">4 总结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Moss Shen"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">Moss Shen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="/shensongjian@gmail.com" title="E-Mail → shensongjian@gmail.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Moss Shen</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
