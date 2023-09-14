@@ -33,7 +33,7 @@
 <meta property="og:image" content="http://example.com/images/dv-uvm-reuse/3.png">
 <meta property="og:image" content="http://example.com/images/dv-uvm-reuse/4.png">
 <meta property="article:published_time" content="2023-09-14T03:03:27.027Z">
-<meta property="article:modified_time" content="2023-09-14T12:07:33.679Z">
+<meta property="article:modified_time" content="2023-09-14T12:15:36.589Z">
 <meta property="article:author" content="Moss Shen">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://example.com/images/dv-uvm-reuse/0.png">
@@ -190,7 +190,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2023-09-14 11:03:27 / 修改时间：20:07:33" itemprop="dateCreated datePublished" datetime="2023-09-14T11:03:27+08:00">2023-09-14</time>
+              <time title="创建时间：2023-09-14 11:03:27 / 修改时间：20:15:36" itemprop="dateCreated datePublished" datetime="2023-09-14T11:03:27+08:00">2023-09-14</time>
             </span>
 
           
@@ -428,28 +428,13 @@
 
 <p>Environment, Agent, Configuration, Sequence, Register model都能够水平复用，组件需要具有以下特点：</p>
 <ul>
-<li>Env复用<ul>
-<li>Env结构的通用性</li>
-<li>Env功能的完备性</li>
-<li>Env配置的可扩展性</li>
+<li>结构的通用性</li>
+<li>功能的完备性</li>
+<li>配置的可扩展性</li>
 </ul>
-</li>
-<li>Agent复用<ul>
-<li>agent结构的通用性</li>
-<li>agent功能的完备性</li>
-<li>agent配置的可扩展性</li>
-</ul>
-</li>
-<li>Sequence复用<ul>
-<li>sequence结构的通用性</li>
-<li>sequence功能的完备性</li>
-<li>sequence配置的可扩展性</li>
-</ul>
-</li>
-</ul>
-<h4 id="3-1-Envrionment复用"><a href="#3-1-Envrionment复用" class="headerlink" title="3.1 Envrionment复用"></a>3.1 Envrionment复用</h4><p>为保证复用性，所有Env具有通用的结构，且所有组件均从dv base env继承而来。包括以下几个组件：</p>
+<h4 id="3-1-Envrionment复用"><a href="#3-1-Envrionment复用" class="headerlink" title="3.1 Envrionment复用"></a>3.1 Envrionment复用</h4><p>为保证复用性，所有Env具有通用的结构，且所有组件均从dv base env继承而来。包括以下：</p>
 <blockquote>
-<p>dv_base_env：所有组件的例化，从basetest中接受env_cfg，从top_tb中接收所有的时钟复位接口，并放入env_cfg的clk_rst_vifs关联数组中。同时根据base_test中的时钟配置配置所有时钟接口的时钟频率 </p>
+<p>dv_base_env：所有组件的例化，fifo的连接</p>
 </blockquote>
 <blockquote>
 <p>dv_base_env_cfg：</p>
@@ -459,42 +444,39 @@
 </ul>
 </blockquote>
 <blockquote>
-<p>dv_base_ref_model：只有一个build_phase中判断cfg不为null的逻辑</p>
+<p>dv_base_ref_model</p>
 </blockquote>
 <blockquote>
-<p>dv_base_scoreboard：增加了如果出现uvm_fatal仍然会运行scoreboard的check_phase的逻辑</p>
+<p>dv_base_scoreboard</p>
 </blockquote>
 <blockquote>
-<p>dv_base_virtual_sequencer：reset_phase中增加了stop_sequence的调用，防止phase跳转后出现错误</p>
+<p>dv_base_virtual_sequencer</p>
 </blockquote>
 <blockquote>
-<p>dv_base_test：env和cfg的创建，cfg中部分参数从命令行获取，end_of_elaboration_phase中通过命令行设置max_quit_count和超时时间。final_phase中打印case的最终仿真结果</p>
+<p>dv_base_test</p>
 </blockquote>
 <blockquote>
 <p>dv_base_pkg：将所有的dv_base类打包到dv_base_pkg中</p>
 </blockquote>
-<h4 id="3-2-AGENT复用"><a href="#3-2-AGENT复用" class="headerlink" title="3.2 AGENT复用"></a>3.2 AGENT复用</h4><p>为保证复用性，所有Agent具有通用的结构，且所有组件均从dv base agent继承而来。包括以下几个组件：</p>
+<h4 id="3-2-AGENT复用"><a href="#3-2-AGENT复用" class="headerlink" title="3.2 AGENT复用"></a>3.2 AGENT复用</h4><p>为保证复用性，所有Agent具有通用的结构，且所有组件均从dv base agent继承而来。包括以下：</p>
 <blockquote>
 <p>dv_agent: 所有agent内部组件的例化连接</p>
 </blockquote>
 <blockquote>
-<p>dv_agent_cfg: agent的配置文件 is_active和if_mode来控制agent的模式；</p>
-<ul>
-<li>is_active&#x3D;0：agent作为monitor，只用于采样数据</li>
-<li>is_active&#x3D;1，is_mode&#x3D;master：agent作为master模式，用于发送数据给DUT</li>
-<li>is_active&#x3D;1，is_mode&#x3D;slave：agent作为slave模式，用于和DUT有数据交互的接口</li>
-</ul>
+<p>dv_agent_cfg: agent的配置文件</p>
 </blockquote>
 <blockquote>
-<p>dv_driver: main_phase中fork了两个进程reset_signals和get_and_drive。子类实现时需要重写这两个函数，用来复位和驱动</p>
+<p>dv_driver: 复位和驱动</p>
 </blockquote>
 <blockquote>
-<p>dv_monitor：子类需要重写collect_trans和watchdog_ok_to_end两个函数，collec_trans的主要作用是从接口上monitor数据，watch_dog_ok_to_end是agent的watchdog，用于监测agent接口上数据，从而判断agent是否在工作。这里给变量ok_to_end赋值为1，表示agent空闲，ok_to_end为0，表示agent在工作。同时需要调整cfg中的ok_to_end_delay_ns，这个变量的含义是，当ok_to_end等于1时，并且持续ok_to_end_delay_ns这么多ns的时间后ok_to_end仍然是1，才会drop_objection</p>
+<p>dv_monitor</p>
 </blockquote>
 <blockquote>
-<p>dv_sequencer：mon2sqr_port，req_port和rsp_port的例化（后面两个port很少用到）</p>
+<p>dv_sequencer：mon2sqr_port，req_port和rsp_port的例化</p>
 </blockquote>
-<p>最后，将所有组件封装成一个package 和一个filelist，便于调用。</p>
+<blockquote>
+<p>dv_agent_pkg：将所有的dv_agent类打包到dv_agent_pkg中</p>
+</blockquote>
 <h4 id="3-3-Sequence复用"><a href="#3-3-Sequence复用" class="headerlink" title="3.3 Sequence复用"></a>3.3 Sequence复用</h4><p>Sequence通用结构如下图所示，主要分成三个组件：</p>
 <ul>
 <li>Atomic sequence ： 完成基础操作</li>
