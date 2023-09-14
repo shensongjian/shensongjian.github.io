@@ -180,7 +180,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2023-09-14 11:03:27 / 修改时间：11:34:29" itemprop="dateCreated datePublished" datetime="2023-09-14T11:03:27+08:00">2023-09-14</time>
+              <time title="创建时间：2023-09-14 11:03:27 / 修改时间：12:16:45" itemprop="dateCreated datePublished" datetime="2023-09-14T11:03:27+08:00">2023-09-14</time>
             </span>
 
           
@@ -195,30 +195,9 @@
 
       
           <hr>
-<h3 id="1-IP环境结构"><a href="#1-IP环境结构" class="headerlink" title="1 IP环境结构"></a>1 IP环境结构</h3><p>ip环境结构如图所示。basetest中主要包括base_test_cfg,reg_model,ddr_mem和env四个部分。</p>
+<h3 id="1-IP环境结构"><a href="#1-IP环境结构" class="headerlink" title="1 IP环境结构"></a>1 IP环境结构</h3><p>UVM验证的核心思想是复用，分为水平复用和垂直复用，以及跨平台复用。针对IP的验证环境，需要做到水平复用和垂直复用。</p>
+<p>可复用的ip环境结构如图所示：</p>
 <img src="/images/dv-uvm-reuse/0.png" width="90%" heiht="90%">
-
-<blockquote>
-<p>base_test_cfg作为整个testcase的最顶层的配置，其内部包含了env_cfg和一些配置变量</p>
-</blockquote>
-<blockquote>
-<p>reg_model在basetest中例化配置连接，并将其发送到env_cfg中</p>
-</blockquote>
-<blockquote>
-<p>amba_vip中涉及到ddr_mem的，ddr_mem在basetest中创建，并将发送到env_cfg中</p>
-</blockquote>
-<blockquote>
-<p>环境的env，env中有以下几个部分</p>
-<ul>
-<li>virtual sequencer：所有sequencer的句柄都在virtual sequencer中</li>
-<li>reference model：参考模型</li>
-<li>scoreboard：用于比较参考模型和DUT输出的数据</li>
-<li>各个agent：分别用于发送和收集transaction</li>
-<li>amba env：amba vip的顶层环境包括axi，ahb，apb，其配置在env_cfg中例化</li>
-<li>env cfg：严格来说不属于env的组件，它是环境的配置文件。包含各个agent的配置以及amba vip的配置。env cfg会被virtual sequencer，reference model，scoreboard所共用</li>
-<li>virtual sequence严格来说不属于env的组件，它是在basetest中启动在virtual sequencer上的顶层sequence，在其中需要根据需求在对应的sequencer上启动所需的sequence(包括agent seuqence和amba vip sequence)</li>
-</ul>
-</blockquote>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2023/09/14/dv-uvm-reuse/#more" rel="contents">
@@ -268,10 +247,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2023-09-06 12:24:53 / 修改时间：13:55:57" itemprop="dateCreated datePublished" datetime="2023-09-06T12:24:53+08:00">2023-09-06</time>
+              <time title="创建时间：2023-09-06 12:24:53" itemprop="dateCreated datePublished" datetime="2023-09-06T12:24:53+08:00">2023-09-06</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-09-14 12:17:13" itemprop="dateModified" datetime="2023-09-14T12:17:13+08:00">2023-09-14</time>
+              </span>
 
           
 
@@ -287,25 +272,6 @@
           <hr>
 <h3 id="1-自动化验证平台简介"><a href="#1-自动化验证平台简介" class="headerlink" title="1 自动化验证平台简介"></a>1 自动化验证平台简介</h3><p>基于Google的OpenTitan框架搭建自动化UVM验证平台，具备从IP级到子系统级，NOC总线级和SOC系统级的验证垂直复用功能。它包括四个基本组件：dv_lib，env_tool，reg_tool和sim_tool。其中dv_lib是一套基于UVM框架的basic结构和通用函数集合；env_tool是基于python语言的验证平台生成器，可以生成uvm验证框架的大部分内容，同时还可以生成具有统一结构的agent模板；reg_tool是基于python语言的自动化寄存器模型测试平台，可以根据寄存器列表excel文件生成uvm register model验证相关的类和函数；sim_tool是基于pyton语言的仿真调度平台，可以支持多种模式的仿真和日志文件分析，同时支持多线程并发操作。</p>
 <img src="/images/dv-uvm-pioneer1/1.jpg" width="70%" heiht="70%">
-
-<blockquote>
-<p>common_lib：包含通用的库文件，目前集成的有dv_lib, amba_vip, assert_lib。同时，验证项目公用的agent也放在此目录下。</p>
-</blockquote>
-<blockquote>
-<p>common_script：包含基于python的reg_tool, env_tool和sim_tool。</p>
-</blockquote>
-<blockquote>
-<p>common_dpi：包含公用的reference model，一般都是基于C或C++语言开发。</p>
-</blockquote>
-<blockquote>
-<p>ip_env：包含所有的IP验证环境，且各个IP的验证环境具有相同的结构。</p>
-</blockquote>
-<blockquote>
-<p>sub_sys_env：多个IP环境集成复用成一个子系统验证环境，在IP验证环境中的agent会自动配置成passive模式，只做monitor侦听和scorboard比对。</p>
-</blockquote>
-<blockquote>
-<p>soc_env：包含NOC总线验证环境和SOC验证环境。其中NOC验证环境会将总线上所有的amba master替换为amba vip，用来全面覆盖总线的功能和评估总线的性能；SOC验证环境会集成sub_sys_env和CPU，在芯片级做寄存器测试和上下电测试。</p>
-</blockquote>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2023/09/06/dv-uvm-pioneer1/#more" rel="contents">
