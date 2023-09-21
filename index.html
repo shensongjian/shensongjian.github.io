@@ -155,6 +155,75 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/09/21/dv-uvm-reuse-cross-platform/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Moss Shen">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MOSS' blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2023/09/21/dv-uvm-reuse-cross-platform/" class="post-title-link" itemprop="url">SOC验证环境及跨平台复用</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2023-09-21 15:54:51 / 修改时间：15:51:54" itemprop="dateCreated datePublished" datetime="2023-09-21T15:54:51+08:00">2023-09-21</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <hr>
+<h3 id="1-SOC环境结构"><a href="#1-SOC环境结构" class="headerlink" title="1 SOC环境结构"></a>1 SOC环境结构</h3><p>UVM验证的核心思想是复用，分为水平复用和垂直复用，以及跨平台复用。针对SOC的验证环境，需要做到跨平台复用。</p>
+<p>SOC验证环境与sub_system验证环境保持相同的结构。例化整个SOC作为DUT，通过force的方式来提供各模块的时钟信号，使用真实的CPU控制各个IP正常工作，使用真实的DDR仿真模型。</p>
+<img src="/images/dv-uvm-reuse-cross-platform/0.png" width="90%" heiht="90%">
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2023/09/21/dv-uvm-reuse-cross-platform/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2023/09/19/dv-uvm-reuse-vertical/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -186,7 +255,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-09-21 12:15:02" itemprop="dateModified" datetime="2023-09-21T12:15:02+08:00">2023-09-21</time>
+                <time title="修改时间：2023-09-21 14:11:26" itemprop="dateModified" datetime="2023-09-21T14:11:26+08:00">2023-09-21</time>
               </span>
 
           
@@ -201,7 +270,7 @@
 
       
           <hr>
-<h3 id="1-sub-system环境结构"><a href="#1-sub-system环境结构" class="headerlink" title="1 sub_system环境结构"></a>1 sub_system环境结构</h3><p>UVM验证的核心思想是复用，分为水平复用和垂直复用，以及跨平台复用。针对sub_system的验证环境，需要做到垂直复用和跨平台复用。</p>
+<h3 id="1-sub-system环境结构"><a href="#1-sub-system环境结构" class="headerlink" title="1 sub_system环境结构"></a>1 sub_system环境结构</h3><p>UVM验证的核心思想是复用，分为水平复用和垂直复用，以及跨平台复用。针对sub_system的验证环境，需要做到垂直复用。</p>
 <p>可复用的sub_system环境结构如图所示：</p>
 <img src="/images/dv-uvm-reuse-vertical/0.png" width="90%" heiht="90%">
           <!--noindex-->
@@ -261,7 +330,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-09-21 12:11:52" itemprop="dateModified" datetime="2023-09-21T12:11:52+08:00">2023-09-21</time>
+                <time title="修改时间：2023-09-21 14:11:21" itemprop="dateModified" datetime="2023-09-21T14:11:21+08:00">2023-09-21</time>
               </span>
 
           
@@ -276,7 +345,7 @@
 
       
           <hr>
-<h3 id="1-IP环境结构"><a href="#1-IP环境结构" class="headerlink" title="1 IP环境结构"></a>1 IP环境结构</h3><p>UVM验证的核心思想是复用，分为水平复用和垂直复用，以及跨平台复用。针对IP的验证环境，需要做到水平复用和垂直复用。</p>
+<h3 id="1-IP环境结构"><a href="#1-IP环境结构" class="headerlink" title="1 IP环境结构"></a>1 IP环境结构</h3><p>UVM验证的核心思想是复用，分为水平复用和垂直复用，以及跨平台复用。针对IP的验证环境，需要做到水平复用。</p>
 <p>可复用的ip环境结构如图所示：</p>
 <img src="/images/dv-uvm-reuse/0.png" width="90%" heiht="90%">
           <!--noindex-->
@@ -930,7 +999,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-count">10</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
