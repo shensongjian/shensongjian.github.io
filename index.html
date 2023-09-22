@@ -178,10 +178,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2023-09-21 15:54:51 / 修改时间：17:16:36" itemprop="dateCreated datePublished" datetime="2023-09-21T15:54:51+08:00">2023-09-21</time>
+              <time title="创建时间：2023-09-21 15:54:51" itemprop="dateCreated datePublished" datetime="2023-09-21T15:54:51+08:00">2023-09-21</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-09-22 18:17:55" itemprop="dateModified" datetime="2023-09-22T18:17:55+08:00">2023-09-22</time>
+              </span>
 
           
 
@@ -197,6 +203,7 @@
           <hr>
 <h3 id="1-SOC环境结构"><a href="#1-SOC环境结构" class="headerlink" title="1 SOC环境结构"></a>1 SOC环境结构</h3><p>UVM验证的核心思想是复用，分为水平复用和垂直复用，以及跨平台复用。针对SOC的验证环境，需要做到跨平台复用。</p>
 <p>SOC验证环境与sub_system验证环境保持相同的结构。例化整个SOC作为DUT，通过force的方式来提供各模块的时钟信号，使用真实的CPU控制各个IP正常工作，使用真实的DDR仿真模型。</p>
+<p>一个典型的SOC结构如图所示，在SOC验证中，sub_system和ip环境会监控对应端口的信号并自动做比对。</p>
 <img src="/images/dv-uvm-reuse-cross-platform/0.png" width="90%" heiht="90%">
           <!--noindex-->
             <div class="post-button">
