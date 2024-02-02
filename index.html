@@ -155,6 +155,75 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/02/02/dv-uvm-noc/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Moss Shen">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MOSS' blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/02/02/dv-uvm-noc/" class="post-title-link" itemprop="url">总线验证及功耗分析</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-02-02 15:24:09 / 修改时间：15:23:43" itemprop="dateCreated datePublished" datetime="2024-02-02T15:24:09+08:00">2024-02-02</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <hr>
+<h2 id="1-环境结构"><a href="#1-环境结构" class="headerlink" title="1. 环境结构"></a><strong>1. 环境结构</strong></h2><p>总线验证的UVM环境结构与Pioneer #1的通用结构保持一致，例化整个SOC作为DUT，在需要测试的总线接口处采用force语句加入amba vip的master和slave，同时也可以全部连接DUT，使用真实的CPU控制各个IP正常工作。</p>
+<h2 id="1-1-设计思想"><a href="#1-1-设计思想" class="headerlink" title="1.1 设计思想"></a><strong>1.1 设计思想</strong></h2><p>为有效的验证总线功能与性能，采取如下策略：将绿色模块替换amba vip，将黄色的接口连接amba monitor ，白色模块（A53，DMA，DDR，SRAM以及所有的slave）采用真实的RTL，红色模块不参与测试。</p>
+<img src="/images/dv-uvm-noc/0.png" width="90%" heiht="90%">
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/02/02/dv-uvm-noc/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2023/09/21/dv-uvm-reuse-cross-platform/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -852,94 +921,11 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2023/08/22/github-page-setup/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Moss Shen">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="MOSS' blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2023/08/22/github-page-setup/" class="post-title-link" itemprop="url">GitHub Pages Setup</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2023-08-22 10:03:16" itemprop="dateCreated datePublished" datetime="2023-08-22T10:03:16+08:00">2023-08-22</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-09-07 09:55:24" itemprop="dateModified" datetime="2023-09-07T09:55:24+08:00">2023-09-07</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><a target="_blank" rel="noopener" href="https://pages.github.com/">GitHub Pages</a> can build your own site from scratch or generate one for your project.</p>
-<h3 id="Outline"><a href="#Outline" class="headerlink" title="Outline"></a>Outline</h3><blockquote>
-<ul>
-<li>Create a repository</li>
-<li>Config SSH key<blockquote>
-<ul>
-<li>Generate SSH key</li>
-<li>Add SSH key to ssh-agent</li>
-</ul>
-</blockquote>
-</li>
-<li>Clone the repository</li>
-<li>Push it into GitHub</li>
-</ul>
-</blockquote>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2023/08/22/github-page-setup/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
+  <nav class="pagination">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+  </nav>
 
 
 
@@ -1006,7 +992,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-count">11</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

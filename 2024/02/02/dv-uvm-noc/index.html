@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="1. 环境结构总线验证的UVM环境结构与Pioneer #1的通用结构保持一致，例化整个SOC作为DUT，在需要测试的总线接口处采用force语句加入amba vip的master和slave，同时也可以全部连接DUT，使用真实的CPU控制各个IP正常工作。 1.1 设计思想为有效的验证总线功能与性能，采取如下策略：将绿色模块替换amba vip，将黄色的接口连接amba monitor ，白色">
+<meta property="og:type" content="article">
+<meta property="og:title" content="总线验证及功耗分析">
+<meta property="og:url" content="http://example.com/2024/02/02/dv-uvm-noc/index.html">
+<meta property="og:site_name" content="MOSS&#39; blog">
+<meta property="og:description" content="1. 环境结构总线验证的UVM环境结构与Pioneer #1的通用结构保持一致，例化整个SOC作为DUT，在需要测试的总线接口处采用force语句加入amba vip的master和slave，同时也可以全部连接DUT，使用真实的CPU控制各个IP正常工作。 1.1 设计思想为有效的验证总线功能与性能，采取如下策略：将绿色模块替换amba vip，将黄色的接口连接amba monitor ，白色">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/dv-uvm-noc/0.png">
+<meta property="og:image" content="http://example.com/images/dv-uvm-noc/1.png">
+<meta property="og:image" content="http://example.com/images/dv-uvm-noc/2.png">
+<meta property="og:image" content="http://example.com/images/dv-uvm-noc/3.png">
+<meta property="og:image" content="http://example.com/images/dv-uvm-noc/4.png">
+<meta property="og:image" content="http://example.com/images/dv-uvm-noc/5.png">
+<meta property="og:image" content="http://example.com/images/dv-uvm-noc/6.png">
+<meta property="og:image" content="http://example.com/images/dv-uvm-noc/7.png">
+<meta property="og:image" content="http://example.com/images/dv-uvm-noc/8.png">
+<meta property="og:image" content="http://example.com/images/dv-uvm-noc/9.png">
+<meta property="og:image" content="http://example.com/images/dv-uvm-noc/10.png">
+<meta property="og:image" content="http://example.com/images/dv-uvm-noc/11.png">
+<meta property="og:image" content="http://example.com/images/dv-uvm-noc/12.png">
+<meta property="og:image" content="http://example.com/images/dv-uvm-noc/13.png">
+<meta property="article:published_time" content="2024-02-02T07:24:09.594Z">
+<meta property="article:modified_time" content="2024-02-02T07:23:43.092Z">
+<meta property="article:author" content="Moss Shen">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/dv-uvm-noc/0.png">
+
+<link rel="canonical" href="http://example.com/2024/02/02/dv-uvm-noc/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>总线验证及功耗分析 | MOSS' blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">MOSS' blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/02/02/dv-uvm-noc/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Moss Shen">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MOSS' blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          总线验证及功耗分析
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-02-02 15:24:09 / 修改时间：15:23:43" itemprop="dateCreated datePublished" datetime="2024-02-02T15:24:09+08:00">2024-02-02</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <hr>
+<h2 id="1-环境结构"><a href="#1-环境结构" class="headerlink" title="1. 环境结构"></a><strong>1. 环境结构</strong></h2><p>总线验证的UVM环境结构与Pioneer #1的通用结构保持一致，例化整个SOC作为DUT，在需要测试的总线接口处采用force语句加入amba vip的master和slave，同时也可以全部连接DUT，使用真实的CPU控制各个IP正常工作。</p>
+<h2 id="1-1-设计思想"><a href="#1-1-设计思想" class="headerlink" title="1.1 设计思想"></a><strong>1.1 设计思想</strong></h2><p>为有效的验证总线功能与性能，采取如下策略：将绿色模块替换amba vip，将黄色的接口连接amba monitor ，白色模块（A53，DMA，DDR，SRAM以及所有的slave）采用真实的RTL，红色模块不参与测试。</p>
+<img src="/images/dv-uvm-noc/0.png" width="90%" heiht="90%">
+
+<span id="more"></span>
+
+<p><strong>功能测试场景如下：</strong></p>
+<p>A53中运行firmware，做DMA数据搬运，同时开启所有的amba master vip，随机访问DDR和SRAM空间的不同地址区域，并做数据比对。</p>
+<p><strong>NOTE：在功能测试中，将所有时钟设置成随机频率，模拟异步的时钟关系。</strong></p>
+<p><strong>性能测试场景如下：</strong></p>
+<p><strong>NOTE：在性能测试中，将所有时钟设置成signoff频率。</strong></p>
+<img src="/images/dv-uvm-noc/1.png" width="90%" heiht="90%">
+
+<h2 id="1-2-实现方式"><a href="#1-2-实现方式" class="headerlink" title="1.2 实现方式"></a><strong>1.2 实现方式</strong></h2><p>使用Pioneer #1工具自动化生成UVM基本框架，使用脚本如下：</p>
+<p>.&#x2F;dvgen.py -e NOC -p Kuiper -soc -has_amba -uvm</p>
+<p>在<a target="_blank" rel="noopener" href="http://top_tb.sv/">top_tb.sv</a>中例化所需要的所有时钟接口，并force到CGU输出端口上。</p>
+<p>在<a target="_blank" rel="noopener" href="http://top_tb.sv/">top_tb.sv</a>中例化所需要的所有总线接口，并force到IP的输出端口上。</p>
+<ul>
+<li><p>axi_if.master_if[  0] 对应NOC_MAIN的VENC接口，分配DDR地址32’h2001_0000<del>32’h5FFF_FFFF，SRAM地址32’h006C_0000</del>32’h0087_FFFF(不包括32’h007E_0000~32’h007E_8000，存放cpu代码，数据和堆栈)</p>
+</li>
+<li><p>axi_if.master_if[  1] 对应NOC_MAIN的DLA接口，分配DDR地址32’h2001_0000<del>32’h5FFF_FFFF，SRAM地址32’h006C_0000</del>32’h0087_FFFF(不包括32’h007E_0000~32’h007E_8000)</p>
+</li>
+<li><p>axi_if.master_if[  2] 对应NOC_MAIN的MCU接口，分配DDR地址32’h2001_0000<del>32’h5FFF_FFFF，SRAM地址32’h0074_0000</del>32’h0087_FFFF(不包括32’h007E_0000~32’h007E_8000)</p>
+</li>
+<li><p>axi_if.master_if[  3] 对应NOC_MAIN的DSP(EPP)接口，分配DDR地址32’h2001_0000<del>32’h5FFF_FFFF，SRAM地址32’h006C_0000</del>32’h0087_FFFF(不包括32’h007E_0000~32’h007E_8000)</p>
+</li>
+<li><p>axi_if.master_if[  4] 对应NOC_MAIN的DSP(EDP)接口，分配DDR地址32’h2001_0000<del>32’h5FFF_FFFF，SRAM地址32’h006C_0000</del>32’h0087_FFFF(不包括32’h007E_0000~32’h007E_8000)</p>
+</li>
+<li><p>axi_if.master_if[  5] 对应NOC_MAIN的SPACC接口，分配DDR地址32’h2001_0000<del>32’h5FFF_FFFF，SRAM地址32’h006C_0000</del>32’h0087_FFFF(不包括32’h007E_0000~32’h007E_8000)</p>
+</li>
+<li><p>axi_if.master_if[  6] 对应axi_comb_vision的GDC_RSZ_IFC_SRAM接口，分配SRAM地址32’h006C_0000<del>32’h0087_FFFF(不包括32’h007E_0000</del>32’h007E_8000)</p>
+</li>
+<li><p>axi_if.master_if[  7] 对应NOC_MAIN的USB3接口，分配DDR地址32’h2001_0000<del>32’h5FFF_FFFF，SRAM地址32’h006C_0000</del>32’h0087_FFFF(不包括32’h007E_0000~32’h007E_8000)</p>
+</li>
+<li><p>axi_if.master_if[  8] 对应NOC_VISION的ISP_SUB_TOP接口，分配DDR地址32’h2001_0000<del>32’h5FFF_FFFF，SRAM地址32’h006C_0000</del>32’h0087_FFFF(不包括32’h007E_0000~32’h007E_8000)</p>
+</li>
+<li><p>axi_if.master_if[  9] 对应NOC_VISION的GDC_DE_INF接口，分配DDR地址32’h2001_0000<del>32’h5FFF_FFFF，SRAM地址32’h006C_0000</del>32’h0087_FFFF(不包括32’h007E_0000~32’h007E_8000)</p>
+</li>
+<li><p>axi_if.master_if[10] 对应NOC_VISION的GDC_DE_GED接口，分配DDR地址32’h2001_0000<del>32’h5FFF_FFFF，SRAM地址32’h006C_0000</del>32’h0087_FFFF(不包括32’h007E_0000~32’h007E_8000)</p>
+</li>
+<li><p>axi_if.master_if[11] 对应NOC_VISION的GDC_RSZ_IFC接口, 分配DDR地址32’h2001_0000<del>32’h5FFF_FFFF，SRAM地址32’h006C_0000</del>32’h0087_FFFF(不包括32’h007E_0000~32’h007E_8000)</p>
+</li>
+<li><p>axi_if.master_if[12] 对应NOC_VISION的JPG_IVE_DPU接口，分配DDR地址32’h2001_0000<del>32’h5FFF_FFFF，SRAM地址32’h006C_0000</del>32’h0087_FFFF(不包括32’h007E_0000~32’h007E_8000)</p>
+</li>
+<li><p>axi_if.master_if[13] 对应NOC_VISION上的OPTICAL接口，分配DDR地址32’h2001_0000<del>32’h5FFF_FFFF(不包括32’h007E_0000</del>32’h007E_8000)</p>
+</li>
+<li><p>axi_if.master_if[14] 对应axi_comb_vision上的GDC_DE_INF_SRAM接口，分配SRAM地址32’h006C_0000<del>32’h0087_FFFF(不包括32’h007E_0000</del>32’h007E_8000)</p>
+</li>
+<li><p>axi_if.master_if[15] 对应axi_comb_vision上的GDC_DE_GED_SRAM接口，分配SRAM地址32’h006C_0000<del>32’h0087_FFFF(不包括32’h007E_0000</del>32’h007E_8000)</p>
+</li>
+<li><p>ahb_if.master_if[ 0] 对应NOC_MAIN上AXI_COMB的USB2_0，分配DDR地址起始32’hd000_0000，SRAM地址起始读写数据量为32’h0074_0000，读写数据量为 width&#x2F;3 </p>
+</li>
+<li><p>ahb_if.master_if[ 1] 对应NOC_MAIN上AXI_COMB的USB2_1，分配DDR地址起始32’hD100_0000，SRAM地址起始读写数据量为32’h0076_0000，读写数据量为 width&#x2F;3</p>
+</li>
+<li><p>ahb_if.master_if[ 2] 对应NOC_MAIN上AXI_COMB的GMAC_TX，分配DDR地址起始32’hD200_0000，SRAM地址起始读写数据量为32’h0078_0000，读写数据量为 width&#x2F;3</p>
+</li>
+<li><p>ahb_if.master_if[ 3] 对应NOC_MAIN上AXI_COMB的GMAC_TX，分配DDR地址起始32’hD300_0000，SRAM地址起始读写数据量为32’h007C_0000，读写数据量为 width&#x2F;3</p>
+</li>
+<li><p>ahb_if.master_if[ 4] 对应NOC_MAIN上AXI_COMB的TROOT，分配DDR地址起始32’hD400_0000，SRAM地址起始读写数据量为32’h007F_0000，读写数据量为 width&#x2F;3</p>
+</li>
+<li><p>ahb_if.master_if[ 5] 对应NOC_MAIN上AHB_Multilayer的SD_0，分配DDR地址起始32’hD500_0000，SRAM地址起始读写数据量为32’h0081_0000，读写数据量为 width&#x2F;3</p>
+</li>
+<li><p>ahb_if.master_if[ 6] 对应NOC_MAIN上AHB_Multilayer的SD_1，分配DDR地址起始32’hD600_0000，SRAM地址起始读写数据量为32’h0083_0000，读写数据量为 width&#x2F;3</p>
+</li>
+<li><p>ahb_if.master_if[ 7] 对应NOC_MAIN上AHB_Multilayer的DMA0，分配DDR地址起始32’hD700_0000，SRAM地址起始读写数据量为32’h0085_0000，读写数据量为 width&#x2F;3</p>
+</li>
+<li><p>ahb_if.master_if[ 8] 对应NOC_MAIN上AHB_Multilayer的DMA0，分配DDR地址起始32’hD800_0000，SRAM地址起始读写数据量为32’h0087_0000，读写数据量为 width&#x2F;3</p>
+</li>
+</ul>
+<p>创建各个slave总线接口，并force到需要监测的端口，并配置slave为passive模式，只做monitor统计带宽和延时:</p>
+<ul>
+<li>axi_if.slave_if[ 0] 对应DDR_TOP的axi接口0，配置成passive模式</li>
+<li>axi_if.slave_if[ 1] 对应DDR_TOP的axi接口1，配置成passive模式</li>
+<li>axi_if.slave_if[ 2] 对应DDR_TOP的axi接口2，配置成passive模式</li>
+<li>axi_if.slave_if[ 3] 对应SRAM_TOP的axi_sram接口，配置成passive模式</li>
+<li>axi_if.slave_if[ 4] 对应VISION_TOP的srammux_to_visionsram接口，配置成passive模式</li>
+<li>axi_if.slave_if[ 5] 对应DSP_TOP的cevaxm6_edap接口，配置成passive模式</li>
+</ul>
+<p>所有总线上的master和slave端口的协议类型，数据位宽，地址位宽，ID位宽，支持outstanding能力，是否支持out of order，性能的统计间隔，性能统计的最大最小值等等配置都在[NOC_cust_svt_amba_system_configuration.sv]中。</p>
+<img src="/images/dv-uvm-noc/2.png" width="90%" heiht="90%">
+
+
+<p>AXI Master读写delay控制有两种模式：默认情况读写delay平均有1个cycle；zero delay模式下，master没有反压。</p>
+<img src="/images/dv-uvm-noc/3.png" width="90%" heiht="90%">
+
+<h2 id="1-3-Test-Point"><a href="#1-3-Test-Point" class="headerlink" title="1.3 Test Point"></a><strong>1.3</strong> <strong>Test Point</strong></h2><img src="/images/dv-uvm-noc/4.png" width="90%" heiht="90%">
+
+<h2 id="1-4-使用方法"><a href="#1-4-使用方法" class="headerlink" title="1.4 使用方法"></a><strong>1.4 使用方法</strong></h2><p>运行方式如下。脚本具体使用方法参照《Pioneer #1 验证白皮书》的章节5：Sim_Tool介绍 <a target="_blank" rel="noopener" href="https://docs.qq.com/doc/DQXR6Z2RDVVZ3aGZp?_t=1656383948077&u=813cd896eb914d82aee5ecdc3296c4b1">Pioneer #1 验证白皮书</a></p>
+<p><strong>特别注意：使用micron的ddr4仿真模型时，在vcs编译选项中不能添加 +vcs+initmem+random 命令行参数，这个参数会导致ddr4仿真模型会随机性的工作不正常，DQS的read preamble偶尔消失。</strong></p>
+<p>RTL仿真环境使用如下：</p>
+<p>$ cd sim &amp;&amp; source SourceMe</p>
+<p>$ .&#x2F;dvsim.py -yaml ..&#x2F;yaml&#x2F;NOC_test.yaml -test NOC_test_num1_1_num2_1 -seed 1 -comp -run</p>
+<p>DC网表仿真环境使用如下：</p>
+<p>$ cd sim_dc_netlist &amp;&amp; source SourceMe</p>
+<p>$ .&#x2F;dvsim.py -yaml ..&#x2F;yaml&#x2F;NOC_test.yaml -test NOC_test_num1_1_num2_1 -seed 1 -comp -run</p>
+<p>PR网表仿真环境使用如下：</p>
+<p>$ cd sim_pr_netlist &amp;&amp; source SourceMe</p>
+<p>$ .&#x2F;dvsim.py -yaml ..&#x2F;yaml&#x2F;NOC_test.yaml -test NOC_test_num1_1_num2_1 -seed 1 -comp -run</p>
+<hr>
+<h2 id="2-验证结果分析"><a href="#2-验证结果分析" class="headerlink" title="2. 验证结果分析"></a><strong>2. 验证结果分析</strong></h2><p>结果分析主要包含功能点检查和性能报告与功耗报告，其中由脚本自动抓取log生成相关的报告。</p>
+<img src="/images/dv-uvm-noc/5.png" width="90%" heiht="90%">
+
+<p>针对ddr的初始化，主要使用如上所示firmware，其中noc_main_nonsecure，test5100_top_dma_single_test用作功能测试；scenario_xxx用作性能测试（ddr4，lpddr3，ecc on&#x2F;off）。</p>
+<h2 id="2-1-功能报告"><a href="#2-1-功能报告" class="headerlink" title="2.1 功能报告"></a><strong>2.1 功能报告</strong></h2><table resolved=""><colgroup><col><col><col><col><col><col><col><col><col></colgroup><tbody><tr><th>master</th><th>slave</th><th>读写数据一致性</th><th>AW_LEN/AR_LEN</th><th>AW_SIZE/AR_SIZE</th><th>AW_BURST/AR_BURST</th><th>AWPROT/ARPROT</th><th>AWCACHE/ARCACHE</th><th>WSTRB</th></tr><tr><td rowspan="4"><s>CPU</s></td><td><s>ddr</s></td><td><s>pass</s></td><td><s>1-16</s></td><td><s>0/4</s></td><td><s>INCR</s></td><td><s>0</s></td><td><s>F</s></td><td><s>1/FFFF</s></td></tr><tr><td><s>sram</s></td><td><s>pass</s></td><td><s>1-16</s></td><td><s>RANDOM</s></td><td><s>INCR/WRAP</s></td><td><s>0</s></td><td><s>F</s></td><td><s>RANDOM</s></td></tr><tr><td><s>illegal</s></td><td><s>pass</s></td><td><s>1-16</s></td><td><s>0/4</s></td><td><s>INCR</s></td><td><s>0</s></td><td><s>F</s></td><td><s>1/FFFF</s></td></tr><tr><td><s>random</s></td><td><s>pass</s></td><td><s>1-16</s></td><td><s>0/4</s></td><td><s>INCR</s></td><td><s>0</s></td><td><s>F</s></td><td><s>1/FFFF</s></td></tr><tr><td rowspan="3">VENC</td><td colspan="1">ddr</td><td colspan="1">pass</td><td colspan="1">2/4/8</td><td colspan="1">4</td><td colspan="1">INCR</td><td colspan="1">0</td><td colspan="1">0</td><td colspan="1">FFFF</td></tr><tr><td colspan="1">sram</td><td colspan="1">pass</td><td colspan="1">2/4/8</td><td colspan="1">4</td><td colspan="1">INCR</td><td colspan="1">0</td><td colspan="1">0</td><td colspan="1">FFFF</td></tr><tr><td colspan="1">random</td><td colspan="1">pass</td><td colspan="1">2/4/8 <span>TODO: 1-16</span></td><td colspan="1">RANDOM</td><td colspan="1">INCR</td><td colspan="1">RANDOM</td><td colspan="1">RANDOM</td><td colspan="1">RANDOM</td></tr><tr><td rowspan="3">DLA</td><td colspan="1">ddr</td><td colspan="1">pass</td><td colspan="1">1-16</td><td colspan="1">4</td><td colspan="1">INCR</td><td colspan="1">0</td><td colspan="1">0</td><td colspan="1">FFFF</td></tr><tr><td colspan="1">sram</td><td colspan="1">pass</td><td colspan="1">1-16</td><td colspan="1">4</td><td colspan="1">INCR</td><td colspan="1">0</td><td colspan="1">0</td><td colspan="1">FFFF</td></tr><tr><td colspan="1">random</td><td colspan="1">pass</td><td colspan="1">1-16</td><td colspan="1">RANDOM</td><td colspan="1">INCR</td><td colspan="1">RANDOM</td><td colspan="1">RANDOM</td><td colspan="1">RANDOM</td></tr><tr><td rowspan="3">MCU</td><td colspan="1">ddr</td><td colspan="1">pass</td><td colspan="1">1/8</td><td colspan="1">3</td><td colspan="1">INCR/WRAP8</td><td colspan="1">0</td><td colspan="1">0</td><td colspan="1">FF</td></tr><tr><td colspan="1">sram</td><td colspan="1">pass</td><td colspan="1">1/8</td><td colspan="1">3</td><td colspan="1">INCR/WRAP8</td><td colspan="1">0</td><td colspan="1">0</td><td colspan="1">FF</td></tr><tr><td colspan="1">random</td><td colspan="1">pass</td><td colspan="1">1/8</td><td colspan="1">RANDOM</td><td colspan="1">INCR</td><td colspan="1">RANDOM</td><td colspan="1">RANDOM</td><td colspan="1">RANDOM</td></tr><tr><td rowspan="3">DSP EPP</td><td colspan="1">ddr</td><td colspan="1">pass</td><td colspan="1">1</td><td colspan="1">4</td><td colspan="1">INCR/WRAP2/WRAP4/WRAP8/WRAP16</td><td colspan="1">0</td><td colspan="1">0</td><td colspan="1">FFFF</td></tr><tr><td colspan="1">sram</td><td colspan="1">pass</td><td colspan="1">1</td><td colspan="1">4</td><td colspan="1">INCR/WRAP2/WRAP4/WRAP8/WRAP16</td><td colspan="1">0</td><td colspan="1">0</td><td colspan="1">FFFF</td></tr><tr><td colspan="1">random</td><td colspan="1">pass</td><td colspan="1">1</td><td colspan="1">RANDOM</td><td colspan="1">INCR</td><td colspan="1">RANDOM</td><td colspan="1">RANDOM</td><td colspan="1">RANDOM</td></tr><tr><td rowspan="3">DSP EDP</td><td colspan="1">ddr</td><td colspan="1">pass</td><td colspan="1">1-256</td><td colspan="1">4</td><td colspan="1">INCR</td><td colspan="1">0</td><td colspan="1">0</td><td colspan="1">FFFF</td></tr><tr><td colspan="1">sram</td><td colspan="1">pass</td><td colspan="1">1-256</td><td colspan="1">4</td><td colspan="1">INCR</td><td colspan="1">0</td><td colspan="1">0</td><td colspan="1">FFFF</td></tr><tr><td colspan="1">random</td><td colspan="1">pass</td><td colspan="1">1-256</td><td colspan="1">RANDOM</td><td colspan="1">INCR</td><td colspan="1">RANDOM</td><td colspan="1">RANDOM</td><td colspan="1">RANDOM</td></tr><tr><td rowspan="3">SPACC</td><td colspan="1">ddr</td><td colspan="1">pass</td><td colspan="1">1-16</td><td colspan="1">3</td><td colspan="1">INCR</td><td colspan="1">0</td><td colspan="1">0</td><td colspan="1">FF</td></tr><tr><td>sram</td><td>pass</td><td>1-16</td><td>3</td><td>INCR</td><td>0</td><td>0</td><td>FF</td></tr><tr><td>random</td><td>pass</td><td>1-16</td><td>RANDOM</td><td>INCR</td><td>RANDOM</td><td>RANDOM</td><td>RANDOM</td></tr><tr><td rowspan="2">GDC_RSZ_IFC_SRAM</td><td colspan="1">sram</td><td colspan="1">pass</td><td colspan="1">8</td><td colspan="1">4</td><td colspan="1">INCR</td><td colspan="1">0</td><td colspan="1">0</td><td colspan="1">FFFF</td></tr><tr><td>random</td><td>pass</td><td>8</td><td>RANDOM</td><td>INCR</td><td>RANDOM</td><td>RANDOM</td><td>RANDOM</td></tr><tr><td rowspan="3">USB3</td><td colspan="1">ddr</td><td colspan="1">pass</td><td colspan="1">1-16</td><td colspan="1">3</td><td colspan="1">INCR</td><td colspan="1">0</td><td colspan="1">0</td><td colspan="1">FF</td></tr><tr><td>sram</td><td>pass</td><td>1-16</td><td>3</td><td>INCR</td><td>0</td><td>0</td><td>FF</td></tr><tr><td>random</td><td>pass</td><td>1-16</td><td>RANDOM</td><td>INCR</td><td>RANDOM</td><td>RANDOM</td><td>RANDOM</td></tr><tr><td rowspan="2">ISP_SUB_TOP</td><td colspan="1">ddr</td><td colspan="1">pass</td><td colspan="1">1-16</td><td colspan="1">4</td><td colspan="1">INCR</td><td colspan="1">0</td><td colspan="1">0</td><td colspan="1">FFFF</td></tr><tr><td>random</td><td>pass</td><td>1-16</td><td>RANDOM</td><td>INCR</td><td>RANDOM</td><td>RANDOM</td><td>RANDOM</td></tr><tr><td rowspan="3">GDC_DE_INF</td><td colspan="1">ddr</td><td colspan="1">pass</td><td colspan="1">1-17</td><td colspan="1">4</td><td colspan="1">INCR</td><td colspan="1">0</td><td colspan="1">0</td><td colspan="1">FFFF</td></tr><tr><td>sram</td><td>pass</td><td>1-17</td><td>4</td><td>INCR</td><td>0</td><td>0</td><td>FFFF</td></tr><tr><td>random</td><td>pass</td><td>1-17</td><td>RANDOM</td><td>INCR</td><td>RANDOM</td><td>RANDOM</td><td>RANDOM</td></tr><tr><td rowspan="3">GDC_DE_GED</td><td colspan="1">ddr</td><td colspan="1">pass</td><td colspan="1">1-17</td><td colspan="1">4</td><td colspan="1">INCR</td><td colspan="1">0</td><td colspan="1">0</td><td colspan="1">FFFF</td></tr><tr><td>sram</td><td>pass</td><td>1-17</td><td>4</td><td>INCR</td><td>0</td><td>0</td><td>FFFF</td></tr><tr><td>random</td><td>pass</td><td>1-17</td><td>RANDOM</td><td>INCR</td><td>RANDOM</td><td>RANDOM</td><td>RANDOM</td></tr><tr><td rowspan="3">GDC_RSZ_IFC</td><td colspan="1">ddr</td><td colspan="1">pass</td><td colspan="1">1-17</td><td colspan="1">4</td><td colspan="1">INCR</td><td colspan="1">0</td><td colspan="1">0</td><td colspan="1">FFFF</td></tr><tr><td>sram</td><td>pass</td><td>1-17</td><td>4</td><td>INCR</td><td>0</td><td>0</td><td>FFFF</td></tr><tr><td>random</td><td>pass</td><td>1-17</td><td>RANDOM</td><td>INCR</td><td>RANDOM</td><td>RANDOM</td><td>RANDOM</td></tr><tr><td rowspan="3">JPG_IVE_DPU</td><td colspan="1">ddr</td><td colspan="1">pass</td><td colspan="1">1-16</td><td colspan="1">4</td><td colspan="1">INCR</td><td colspan="1">0</td><td colspan="1">0</td><td colspan="1">FFFF</td></tr><tr><td>sram</td><td>pass</td><td>1-16</td><td>4</td><td>INCR</td><td>0</td><td>0</td><td>FFFF</td></tr><tr><td colspan="1">random</td><td colspan="1">pass</td><td colspan="1">1-16</td><td colspan="1">RANDOM</td><td colspan="1">INCR</td><td colspan="1">RANDOM</td><td colspan="1">RANDOM</td><td colspan="1">RANDOM</td></tr><tr><td rowspan="2">OPTICAL</td><td>ddr</td><td>pass</td><td>1-16</td><td>4</td><td>INCR</td><td>0</td><td>0</td><td>FFFF</td></tr><tr><td colspan="1">random</td><td colspan="1">pass</td><td colspan="1">1-16</td><td colspan="1">RANDOM</td><td colspan="1">INCR</td><td colspan="1">RANDOM</td><td colspan="1">RANDOM</td><td colspan="1">RANDOM</td></tr><tr><td rowspan="2">GDC_DE_INF_SRAM</td><td>sram</td><td>pass</td><td>8</td><td>4</td><td>INCR</td><td>0</td><td>0</td><td>FFFF</td></tr><tr><td colspan="1">random</td><td colspan="1">pass</td><td colspan="1">8</td><td colspan="1">RANDOM</td><td colspan="1">INCR</td><td colspan="1">RANDOM</td><td colspan="1">RANDOM</td><td colspan="1">RANDOM</td></tr><tr><td rowspan="2">GDC_DE_GED_SRAM</td><td>sram</td><td>pass</td><td>8</td><td>4</td><td>INCR</td><td>0</td><td>0</td><td>FFFF</td></tr><tr><td>random</td><td>pass</td><td>8</td><td>RANDOM</td><td>INCR</td><td>RANDOM</td><td>RANDOM</td><td>RANDOM</td></tr><tr><td rowspan="3">USB2_0</td><td>ddr</td><td>pass</td><td>1-16</td><td>RANDOM</td><td>INCR</td><td>0</td><td><br></td><td><br></td></tr><tr><td>sram</td><td>pass</td><td>1-16</td><td>RANDOM</td><td>INCR</td><td>0</td><td><br></td><td><br></td></tr><tr><td>random</td><td>pass</td><td>1-16</td><td>RANDOM</td><td>INCR</td><td>0</td><td><br></td><td><br></td></tr><tr><td rowspan="3">USB2_1</td><td colspan="1">ddr</td><td colspan="1">pass</td><td colspan="1">1-16</td><td colspan="1">RANDOM</td><td colspan="1">INCR</td><td colspan="1">0</td><td colspan="1"><br></td><td colspan="1"><br></td></tr><tr><td>sram</td><td>pass</td><td>1-16</td><td>RANDOM</td><td>INCR</td><td>0</td><td><br></td><td><br></td></tr><tr><td>random</td><td>pass</td><td>1-16</td><td>RANDOM</td><td>INCR</td><td>0</td><td><br></td><td><br></td></tr><tr><td rowspan="3">GMAC_TX</td><td colspan="1">ddr</td><td colspan="1">pass</td><td colspan="1">1-16</td><td colspan="1">RANDOM</td><td colspan="1">INCR</td><td colspan="1">0</td><td colspan="1"><br></td><td colspan="1"><br></td></tr><tr><td>sram</td><td>pass</td><td>1-16</td><td>RANDOM</td><td>INCR</td><td>0</td><td><br></td><td><br></td></tr><tr><td>random</td><td>pass</td><td>1-16</td><td>RANDOM</td><td>INCR</td><td>0</td><td><br></td><td><br></td></tr><tr><td rowspan="3">GMAC_RX</td><td>ddr</td><td>pass</td><td>1-16</td><td>RANDOM</td><td>INCR</td><td>0</td><td><br></td><td><br></td></tr><tr><td>sram</td><td>pass</td><td>1-16</td><td>RANDOM</td><td>INCR</td><td>0</td><td><br></td><td><br></td></tr><tr><td>random</td><td>pass</td><td>1-16</td><td>RANDOM</td><td>INCR</td><td>0</td><td><br></td><td><br></td></tr><tr><td rowspan="3">TROOT</td><td colspan="1">ddr</td><td colspan="1">pass</td><td colspan="1">1-16</td><td colspan="1">RANDOM</td><td colspan="1">INCR</td><td colspan="1">0</td><td colspan="1"><br></td><td colspan="1"><br></td></tr><tr><td>sram</td><td>pass</td><td>1-16</td><td>RANDOM</td><td>INCR</td><td>0</td><td><br></td><td><br></td></tr><tr><td>random</td><td>pass</td><td>1-16</td><td>RANDOM</td><td>INCR</td><td>0</td><td><br></td><td><br></td></tr><tr><td rowspan="3">SDCARD0</td><td>ddr</td><td>pass</td><td>1-16</td><td>RANDOM</td><td>INCR</td><td>0</td><td><br></td><td><br></td></tr><tr><td>sram</td><td>pass</td><td>1-16</td><td>RANDOM</td><td>INCR</td><td>0</td><td><br></td><td><br></td></tr><tr><td>random</td><td>pass</td><td>1-16</td><td>RANDOM</td><td>INCR</td><td>0</td><td><br></td><td><br></td></tr><tr><td rowspan="3">SDCARD1</td><td colspan="1">ddr</td><td colspan="1">pass</td><td colspan="1">1-16</td><td colspan="1">RANDOM</td><td colspan="1">INCR</td><td colspan="1">0</td><td colspan="1"><br></td><td colspan="1"><br></td></tr><tr><td>sram</td><td>pass</td><td>1-16</td><td>RANDOM</td><td>INCR</td><td>0</td><td><br></td><td><br></td></tr><tr><td>random</td><td>pass</td><td>1-16</td><td>RANDOM</td><td>INCR</td><td>0</td><td><br></td><td><br></td></tr><tr><td rowspan="3">DMA0</td><td>ddr</td><td>pass</td><td>1-16</td><td>RANDOM</td><td>INCR</td><td>0</td><td><br></td><td><br></td></tr><tr><td>sram</td><td>pass</td><td>1-16</td><td>RANDOM</td><td>INCR</td><td>0</td><td><br></td><td><br></td></tr><tr><td>random</td><td>pass</td><td>1-16</td><td>RANDOM</td><td>INCR</td><td>0</td><td><br></td><td><br></td></tr><tr><td rowspan="3">DMA1</td><td colspan="1">ddr</td><td colspan="1">pass</td><td colspan="1">1-16</td><td colspan="1">RANDOM</td><td colspan="1">INCR</td><td colspan="1">0</td><td colspan="1"><br></td><td colspan="1"><br></td></tr><tr><td>sram</td><td>pass</td><td>1-16</td><td>RANDOM</td><td>INCR</td><td>0</td><td><br></td><td><br></td></tr><tr><td>random</td><td>pass</td><td>1-16</td><td>RANDOM</td><td>INCR</td><td>0</td><td><br></td><td><br></td></tr></tbody></table>
+
+<h2 id="2-2-性能报告"><a href="#2-2-性能报告" class="headerlink" title="2.2 性能报告"></a><strong>2.2 性能报告</strong></h2><p>使用脚本gen_perf_report.py可以自动提取vcs_sim.log中的信息，并填写template excel文件中的绿色区域部分。使用参考示例如下：</p>
+<p>.&#x2F;gen_perf_report.py .&#x2F;out&#x2F;cases&#x2F;NOC_test_num1_1_num2_1&#x2F; ..&#x2F;script&#x2F;noc_performance_template.xlsx</p>
+<p>gen_perf_report.py脚本是自动匹配log文件中的关键字，提取出read throughput和write throughput信息，然后填表。在AMBA VIP performance的定义中，throughput是单位统计时间内传输的byte数，VIP报出来的throughput是经过换算后的，单位为MB&#x2F;s。在AMBA VIP performance的定义中，bandwidth是单位统计时间内传输的byte数&#x2F;延时，这个定义难以理解。在Pioneer #2中统计的带宽是VIP报出来的throughput信息。</p>
+<p>gen_perf_report.py脚本中定义了4个字典保存基本信息，同时定义了2个变量来保存起始行和时间间隔字符串。</p>
+<ul>
+<li>id_name_dict_noc_master字典存放的是所有VIP master的ID，也就是对应AMBA configuration文件中的master[xx]</li>
+<li>id_name_dict_noc_slave字典存放的是所有VIP slave的ID，也就是对应AMBA configuration文件中的slave[xx]</li>
+<li>perf_indict_column_dict字典存放的是性能报告excel的相关列number，以及该列对应的performance信息（latency，throughput，efficiency）</li>
+<li>all_perf_ip_line_offset字典存放的是性能报告excel的相关行bumber，以及该行对应的master信息</li>
+<li>row_index对应的是从第几行开始填写性能报告表格</li>
+<li>time_region对应的是VIP time interval区间，需要与log中的信息完全对应</li>
+</ul>
+<h3 id="2-2-1-单master性能测试机制"><a href="#2-2-1-单master性能测试机制" class="headerlink" title="2.2.1 单master性能测试机制"></a>2.2.1 单master性能测试机制</h3><p>每个master使用最高频率，最大burstlen，随机读写5000000 byte的数据，地址对齐16byte，递增。根据消耗的时间来折算每个master能得到的最大带宽。</p>
+<h4 id="单master性能（DDR4-ECC-off，3200Mhz，-32bit）"><a href="#单master性能（DDR4-ECC-off，3200Mhz，-32bit）" class="headerlink" title="单master性能（DDR4 ECC off，3200Mhz， 32bit）"></a>单master性能（DDR4 ECC off，3200Mhz， 32bit）</h4><img src="/images/dv-uvm-noc/6.png" width="90%" heiht="90%">
+
+<h4 id="单master性能（DDR4-ECC-on，3200Mhz，-32bit）"><a href="#单master性能（DDR4-ECC-on，3200Mhz，-32bit）" class="headerlink" title="单master性能（DDR4 ECC on，3200Mhz， 32bit）"></a>单master性能（DDR4 ECC on，3200Mhz， 32bit）</h4><img src="/images/dv-uvm-noc/7.png" width="90%" heiht="90%">
+
+<h4 id="单master性能（LPDDR3-ECC-off，2133Mhz，-32bit）"><a href="#单master性能（LPDDR3-ECC-off，2133Mhz，-32bit）" class="headerlink" title="单master性能（LPDDR3 ECC off，2133Mhz， 32bit）"></a>单master性能（LPDDR3 ECC off，2133Mhz， 32bit）</h4><img src="/images/dv-uvm-noc/8.png" width="90%" heiht="90%">
+
+<h4 id="单master性能（LPDDR3-ECC-on，2133Mhz，-32bit）"><a href="#单master性能（LPDDR3-ECC-on，2133Mhz，-32bit）" class="headerlink" title="单master性能（LPDDR3 ECC on，2133Mhz， 32bit）"></a>单master性能（LPDDR3 ECC on，2133Mhz， 32bit）</h4><img src="/images/dv-uvm-noc/9.png" width="90%" heiht="90%">
+
+<h3 id="2-2-2-多master性能测试机制"><a href="#2-2-2-多master性能测试机制" class="headerlink" title="2.2.2 多master性能测试机制"></a>2.2.2 多master性能测试机制</h3><p>每个master使用最高频率，实际burstlen，实际outstanding，随机读写场景对应的10ms的数据。地址对齐16byte，递增。 QOS未限定。根据消耗的时间来折算每个master能得到的最大带宽。</p>
+<h4 id="FPV场景性能（DDR4，32bit，-3200M，-ECC-off）"><a href="#FPV场景性能（DDR4，32bit，-3200M，-ECC-off）" class="headerlink" title="FPV场景性能（DDR4，32bit， 3200M， ECC off）"></a>FPV场景性能（DDR4，32bit， 3200M， ECC off）</h4><img src="/images/dv-uvm-noc/10.png" width="90%" heiht="90%">
+
+<h4 id="无人机5-4K30fps-zoom小于2场景性能（DDR4，32bit，-3200M，-ECC-off）"><a href="#无人机5-4K30fps-zoom小于2场景性能（DDR4，32bit，-3200M，-ECC-off）" class="headerlink" title="无人机5.4K30fps-zoom小于2场景性能（DDR4，32bit， 3200M， ECC off）"></a>无人机5.4K30fps-zoom小于2场景性能（DDR4，32bit， 3200M， ECC off）</h4><img src="/images/dv-uvm-noc/11.png" width="90%" heiht="90%">
+
+<h4 id="AR10非压缩场景性能（LPDDR3，32bit，-2133M，-ECC-off）"><a href="#AR10非压缩场景性能（LPDDR3，32bit，-2133M，-ECC-off）" class="headerlink" title="AR10非压缩场景性能（LPDDR3，32bit， 2133M， ECC off）"></a>AR10非压缩场景性能（LPDDR3，32bit， 2133M， ECC off）</h4><img src="/images/dv-uvm-noc/12.png" width="90%" heiht="90%">
+
+
+<hr>
+<h2 id="3-功耗结果分析"><a href="#3-功耗结果分析" class="headerlink" title="3. 功耗结果分析"></a><strong>3. 功耗结果分析</strong></h2><p>基于RTL的功耗分析具有很大的不确定性，在Pioneer #2中，采用前端dc网表和后端pr网表来做功耗分析。<br>pt_power.xxx.tcl脚本是功耗分析脚本，供功耗分析工具PrimeTimePX使用，针对前端DC网表，功耗分析脚本需要输入DC网表，DC产生的SDC文件，基于前端DC网表的fsdb波形文件。针对后端PR网表，功耗分析脚本需要输入后端的PT session，基于后端PR网表的fsdb波形文件。设置合理的选项，即可得到合理的功耗数据。</p>
+<blockquote>
+<p>set power_enable_advanced_fsdb_reader true可以避免fsdb版本不匹配的问题</p>
+</blockquote>
+<blockquote>
+<p>set power_limit_extrapolation_range true可以限制PTPX对高负载模型的估算问题，针对前端DC网表，必须将这个变量设置为true</p>
+</blockquote>
+<blockquote>
+<p>set power_use_ccsp_pin_capacitance true可以更精确的推算电容充放电功耗，建议设置为true</p>
+</blockquote>
+<p>功耗分析工具PrimeTimePX将功耗分成以下三种：</p>
+<blockquote>
+<p>Net Switching Power：cell外部的连线上RC充放电产生的功耗，主要是电压切换的过程中产生的，属于动态功耗</p>
+</blockquote>
+<blockquote>
+<p>Cell Internal Power：cell内部的RC充放电产生的功耗，同时包括瞬时的短路功耗，也包括clock pin上的clock翻转功耗</p>
+</blockquote>
+<blockquote>
+<p>Cell Leakage Power：所有cell的静态功耗，只要通电就会产生，与cell的阈值电压，工作温度和工艺corner有关</p>
+</blockquote>
+<p>比较前端DC网表功耗和后端PR网表功耗结果可以看出：</p>
+<blockquote>
+<p>Internal Power基本上一致，有大约10%的增幅，增幅原因在于后端团队在时序收敛过程中会增加额外的buffer；</p>
+</blockquote>
+<blockquote>
+<p>Leakage Power有较大的增幅，增幅原因在于后端团队在实现过程中会采用不同阈值电压的cell来增大驱动能力或者收敛时序（LVT，SVT，HVT），同时额外增加的cell也会增大leakage，这里增幅大约150%；</p>
+</blockquote>
+<blockquote>
+<p>Net Switching Power增幅最大，大约400%的增幅，主要原因在于后端PR网表附带了spef信息（SPEF是Standard Parasitic Extraction Format的缩写，用于描述芯片在PR之后实际电路中的 R L C 的值），能够描述连线的物理信息，充放电功耗更准确。</p>
+</blockquote>
+<p>基于前端DC网表的功耗与后端PR网表的功耗分析结果，可以大致得出一个比例关系，即从前端DC网表的功耗推算出合理的后端PR网表功耗，进而在前期即可相对准确的评估总线和系统功耗。如下表所示，根据前端DC网表功耗，估算出后端PR网表的功耗。根据经验值，再添加10%的margin（用于总线模块互连线上的功耗），即可以得出系统总线的整体功耗结果。</p>
+<img src="/images/dv-uvm-noc/13.png" width="90%" heiht="90%">
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/09/21/dv-uvm-reuse-cross-platform/" rel="prev" title="SOC验证环境及跨平台复用">
+      <i class="fa fa-chevron-left"></i> SOC验证环境及跨平台复用
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E7%8E%AF%E5%A2%83%E7%BB%93%E6%9E%84"><span class="nav-number">1.</span> <span class="nav-text">1. 环境结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-%E8%AE%BE%E8%AE%A1%E6%80%9D%E6%83%B3"><span class="nav-number">2.</span> <span class="nav-text">1.1 设计思想</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F"><span class="nav-number">3.</span> <span class="nav-text">1.2 实现方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3-Test-Point"><span class="nav-number">4.</span> <span class="nav-text">1.3 Test Point</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-4-%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95"><span class="nav-number">5.</span> <span class="nav-text">1.4 使用方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E9%AA%8C%E8%AF%81%E7%BB%93%E6%9E%9C%E5%88%86%E6%9E%90"><span class="nav-number">6.</span> <span class="nav-text">2. 验证结果分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-%E5%8A%9F%E8%83%BD%E6%8A%A5%E5%91%8A"><span class="nav-number">7.</span> <span class="nav-text">2.1 功能报告</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-%E6%80%A7%E8%83%BD%E6%8A%A5%E5%91%8A"><span class="nav-number">8.</span> <span class="nav-text">2.2 性能报告</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-1-%E5%8D%95master%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95%E6%9C%BA%E5%88%B6"><span class="nav-number">8.1.</span> <span class="nav-text">2.2.1 单master性能测试机制</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8D%95master%E6%80%A7%E8%83%BD%EF%BC%88DDR4-ECC-off%EF%BC%8C3200Mhz%EF%BC%8C-32bit%EF%BC%89"><span class="nav-number">8.1.1.</span> <span class="nav-text">单master性能（DDR4 ECC off，3200Mhz， 32bit）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8D%95master%E6%80%A7%E8%83%BD%EF%BC%88DDR4-ECC-on%EF%BC%8C3200Mhz%EF%BC%8C-32bit%EF%BC%89"><span class="nav-number">8.1.2.</span> <span class="nav-text">单master性能（DDR4 ECC on，3200Mhz， 32bit）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8D%95master%E6%80%A7%E8%83%BD%EF%BC%88LPDDR3-ECC-off%EF%BC%8C2133Mhz%EF%BC%8C-32bit%EF%BC%89"><span class="nav-number">8.1.3.</span> <span class="nav-text">单master性能（LPDDR3 ECC off，2133Mhz， 32bit）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8D%95master%E6%80%A7%E8%83%BD%EF%BC%88LPDDR3-ECC-on%EF%BC%8C2133Mhz%EF%BC%8C-32bit%EF%BC%89"><span class="nav-number">8.1.4.</span> <span class="nav-text">单master性能（LPDDR3 ECC on，2133Mhz， 32bit）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-2-%E5%A4%9Amaster%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95%E6%9C%BA%E5%88%B6"><span class="nav-number">8.2.</span> <span class="nav-text">2.2.2 多master性能测试机制</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#FPV%E5%9C%BA%E6%99%AF%E6%80%A7%E8%83%BD%EF%BC%88DDR4%EF%BC%8C32bit%EF%BC%8C-3200M%EF%BC%8C-ECC-off%EF%BC%89"><span class="nav-number">8.2.1.</span> <span class="nav-text">FPV场景性能（DDR4，32bit， 3200M， ECC off）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%97%A0%E4%BA%BA%E6%9C%BA5-4K30fps-zoom%E5%B0%8F%E4%BA%8E2%E5%9C%BA%E6%99%AF%E6%80%A7%E8%83%BD%EF%BC%88DDR4%EF%BC%8C32bit%EF%BC%8C-3200M%EF%BC%8C-ECC-off%EF%BC%89"><span class="nav-number">8.2.2.</span> <span class="nav-text">无人机5.4K30fps-zoom小于2场景性能（DDR4，32bit， 3200M， ECC off）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#AR10%E9%9D%9E%E5%8E%8B%E7%BC%A9%E5%9C%BA%E6%99%AF%E6%80%A7%E8%83%BD%EF%BC%88LPDDR3%EF%BC%8C32bit%EF%BC%8C-2133M%EF%BC%8C-ECC-off%EF%BC%89"><span class="nav-number">8.2.3.</span> <span class="nav-text">AR10非压缩场景性能（LPDDR3，32bit， 2133M， ECC off）</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E5%8A%9F%E8%80%97%E7%BB%93%E6%9E%9C%E5%88%86%E6%9E%90"><span class="nav-number">9.</span> <span class="nav-text">3. 功耗结果分析</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Moss Shen"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">Moss Shen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="/shensongjian@gmail.com" title="E-Mail → shensongjian@gmail.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Moss Shen</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
