@@ -155,6 +155,91 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/06/24/dv-emulator-env/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Moss Shen">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MOSS' blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/06/24/dv-emulator-env/" class="post-title-link" itemprop="url">UVM+Emulator硬件加速联合仿真</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-06-24 15:36:25 / 修改时间：15:36:03" itemprop="dateCreated datePublished" datetime="2024-06-24T15:36:25+08:00">2024-06-24</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <hr>
+<h2 id="1-环境结构"><a href="#1-环境结构" class="headerlink" title="1. 环境结构"></a><strong>1. 环境结构</strong></h2><p>基于西门子Veloce的UVM硬件加速验证平台，其主要覆盖IP仿真加速，SOC系统验证，应用场景功耗分析等几个方面。验证环境采用的目录结构与pioneer #1保持一致。</p>
+<p>采用硬件加速之后，DUT运行的时间极大的缩短，相比较与VCS仿真，可提高运行速度120倍左右。</p>
+<p>Veloce硬件平台的结构如图所示。</p>
+<img src="/images/dv-emulator-env/0.png" width="90%" heiht="90%">
+
+
+<h3 id="1-1-设计思想"><a href="#1-1-设计思想" class="headerlink" title="1.1 设计思想"></a><strong>1.1 设计思想</strong></h3><p>硬件加速验证就是将DUT代码完全在veloce平台上运行起来，针对UVM环境做一些特定的修改，实现流程如下：</p>
+<blockquote>
+<p>修改ASIC设计（时钟，复位，memory，PHY，PAD）</p>
+</blockquote>
+<blockquote>
+<p>将UVM环境分割成HVL和HDL两个部分</p>
+</blockquote>
+<blockquote>
+<p>使用Transaction Library进行HVL和HDL的通信</p>
+</blockquote>
+<blockquote>
+<p>采用veloce综合，加速仿真</p>
+</blockquote>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/06/24/dv-emulator-env/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2024/02/02/dv-uvm-noc/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -831,96 +916,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2023/08/22/hexo-setup/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Moss Shen">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="MOSS' blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2023/08/22/hexo-setup/" class="post-title-link" itemprop="url">HEXO Setup</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2023-08-22 11:07:44" itemprop="dateCreated datePublished" datetime="2023-08-22T11:07:44+08:00">2023-08-22</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2023-09-05 10:07:44" itemprop="dateModified" datetime="2023-09-05T10:07:44+08:00">2023-09-05</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a> is a fast, simple &amp; powerful blog framework. It is based on Node.js which brings you incredible generation speed. Also, Hexo can support Markdown features and kinds of plugins.</p>
-<h3 id="Outline"><a href="#Outline" class="headerlink" title="Outline"></a>Outline</h3><blockquote>
-<ul>
-<li>Install Node.js</li>
-<li>Install Hexo</li>
-<li>Setup the blog<blockquote>
-<ul>
-<li>Initialize blog</li>
-<li>Generate static files</li>
-<li>Start local server to preview</li>
-<li>Set theme to NexT</li>
-</ul>
-</blockquote>
-</li>
-<li>Config GitHub Pages</li>
-<li>Connect Hexo to GitHub</li>
-<li>Deploy Hexo into GitHub</li>
-</ul>
-</blockquote>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2023/08/22/hexo-setup/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -992,7 +987,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-count">12</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
